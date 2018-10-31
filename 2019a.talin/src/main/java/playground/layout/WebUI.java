@@ -1,6 +1,8 @@
 package playground.layout;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import playground.logic.Location;
 import playground.logic.Message;
 import playground.logic.MessageGenerator;
 
+/**
+ * @author Tali
+ *
+ */
 @RestController
 public class WebUI {
 	private String defaultUserName;
@@ -101,7 +108,15 @@ public class WebUI {
 		}
 	}
 
-	
+/*	@RequestMapping(
+			method=RequestMethod.GET,
+			path="/playground/elements/{userPlayground}/{email}/search/{attributeName}/{value} ",
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	public ElementTO[] getElementsWithAttribute(@PathVariable("userPlayground") String userPlayground,
+			@PathVariable("email") String email, @PathVariable("attributeName") String attributeName,
+			@PathVariable("value") String value) {
+		ArrayList<ElementTO> elements = new ArrayList<>();
+	}*/
 	
 }
 
