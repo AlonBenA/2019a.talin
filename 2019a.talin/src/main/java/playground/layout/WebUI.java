@@ -3,7 +3,9 @@ package playground.layout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import playground.logic.ElementTO;
 import playground.logic.Location;
 import playground.logic.Message;
 import playground.logic.MessageGenerator;
@@ -24,6 +27,7 @@ import playground.logic.MessageGenerator;
  */
 @RestController
 public class WebUI {
+	
 	private String defaultUserName;
 	private MessageGenerator messageGenerator;
 	
@@ -118,6 +122,77 @@ public class WebUI {
 		ArrayList<ElementTO> elements = new ArrayList<>();
 	}*/
 	
+	
+	//Sprint2: Write the GET /playground/elements/{userPlayground}/{email}/all
+	@RequestMapping(
+			method=RequestMethod.GET,
+			path="/playground/elements/{userPlayground}/{email}/all",
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	public ElementTO[] getAllElements (@PathVariable("userPlayground") String userPlayground,@PathVariable("email") String email) {
+		
+		List<ElementTO> elements = getListOfElementsTO();
+		
+		return elements.toArray(new ElementTO[0]);		
+	}
+	
+	
+	//Sprint2: Write the GET /playground/elements/{userPlayground}/{email}/near/{x}/{y}/{distan ce}
+	// to check {distan ce} Represents 
+	@RequestMapping(
+			method=RequestMethod.GET,
+			path= "/playground/elements/{userPlayground}/{email}/near/{x}/{y}/{distan ce}" ,
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	public ElementTO[] getAllNearElements (@PathVariable("userPlayground") String userPlayground,
+			@PathVariable("email") String email,
+			@PathVariable("x") double x,
+			@PathVariable("y") double y,
+			@PathVariable("distan ce") String center) {
+		
+		List<ElementTO> Allelements = getListOfElementsTO();
+		
+		return Allelements.toArray(new ElementTO[0]);	
+	}
+	
+	
+	public List<ElementTO> getListOfElementsTO()
+	{
+		Location location1 = new Location(10.0,10.0);
+		Location location2 = new Location(100.0,100.0);
+		String name1 = "Dog";
+		String name2 = "Cat";
+		String type1 = "Dog";
+		String type2 = "Cat";
+		Map<String,Object> attributes1  = new HashMap<>();
+		attributes1.put("Play", "Woof");
+		Map<String,Object> attributes2 = new HashMap<>();
+		attributes2.put("Play", "Meow");
+		String creatorPlayground = "2019a.Talin";
+		String creatorEmail = "AlonMail@Mail.com";
+		
+		List<ElementTO> elements = Arrays.asList(
+				new ElementTO(location1,name1, new Date(),type1,attributes1,creatorPlayground,creatorEmail),
+				new ElementTO(location2,name2, new Date(),type2,attributes2,creatorPlayground,creatorEmail),
+				new ElementTO()
+				);
+		
+		return elements;
+	}
+	
+	//Sprint2: Write the PUT /playground/elements/{userPlayground}/{email}/{playground}/{id}
+	@RequestMapping(
+			method=RequestMethod.PUT,
+			path="/playground/elements/{userPlayground}/{email}/{playground}/{id}",
+			consumes=MediaType.APPLICATION_JSON_VALUE)
+	public void updateElement (
+			@PathVariable("userPlayground") String userPlayground,
+			@PathVariable("email") String email,
+			@PathVariable("playground") String playground,
+			@PathVariable("id") String id,
+			@RequestBody ElementTO newElement) throws Exception {
+		//DO something
+		
+	}
+
 }
 
 
