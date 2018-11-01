@@ -3,7 +3,7 @@ package playground.logic;
 public class UserTo {
 	private String email;
 	private String playground;
-	private String usernam;
+	private String username;
 	private String avatar;
 	private String role;
 	private long points;
@@ -12,11 +12,11 @@ public class UserTo {
 	}
 	
 	
-	public UserTo(String email, String usernam, String avatar, String role, long points) {
+	public UserTo(String email, String playground, String usernam, String avatar, String role, long points) {
 		super();
 		setEmail(email);
 		setPlayground(playground);
-		setUsernam(usernam);
+		setUsername(usernam);
 		setAvatar(avatar);
 		setRole(role);
 		setPoints(points);
@@ -39,12 +39,12 @@ public class UserTo {
 		this.playground = playground;
 	}
 
-	public String getUsernam() {
-		return usernam;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUsernam(String usernam) {
-		this.usernam = usernam;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getAvatar() {
