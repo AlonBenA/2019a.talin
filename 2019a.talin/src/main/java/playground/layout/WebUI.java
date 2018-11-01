@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import playground.logic.ActivityTO;
 import playground.logic.ElementTO;
 import playground.logic.Location;
 import playground.logic.Message;
@@ -112,16 +113,58 @@ public class WebUI {
 		}
 	}
 
-/*	@RequestMapping(
+	//Sprint2: Write the GET/playground/elements/{userPlayground}/{email}/search/{attributeNa me}/{value} 
+	@RequestMapping(
 			method=RequestMethod.GET,
-			path="/playground/elements/{userPlayground}/{email}/search/{attributeName}/{value} ",
+			path="/playground/elements/{userPlayground}/{email}/search/{attributeName}/{value}",
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ElementTO[] getElementsWithAttribute(@PathVariable("userPlayground") String userPlayground,
 			@PathVariable("email") String email, @PathVariable("attributeName") String attributeName,
 			@PathVariable("value") String value) {
-		ArrayList<ElementTO> elements = new ArrayList<>();
-	}*/
+		
+		List<ElementTO> allElements = getListOfElementsTO();
+		List<ElementTO> elementsWithAttribute = new ArrayList<>();
+		
+		for(ElementTO element: allElements)
+			if(element.getAttributes().containsKey(attributeName))
+				if(element.getAttributes().get(attributeName).equals(value))
+					elementsWithAttribute.add(element);	
+			
+		return elementsWithAttribute.toArray(new ElementTO[0]);
+	}
 	
+	//Sprint2: Write the /playground/activities/{userPlayground}/{email} 
+	@RequestMapping(
+			method=RequestMethod.POST,
+			path="/playground/activities/{userPlayground}/{email}",
+			produces=MediaType.APPLICATION_JSON_VALUE,
+			consumes=MediaType.APPLICATION_JSON_VALUE)
+	public Object activateElement (
+			@PathVariable("userPlayground") String userPlayground,
+			@PathVariable("email") String email, @RequestBody ActivityTO activityTo) {
+		
+		String activityResult = "";
+		
+		switch(activityTo.getType())
+		{
+		case "Play":
+			activityResult = "You have played with " + activityTo.getElementId() + " element";
+			break;
+			
+		case "Feed":
+			activityResult = "You fed " + activityTo.getElementId() + " element";
+			break;
+			
+		case "Place an add":
+			activityResult = "You placed an Ad on " + activityTo.getElementId() + " element";
+			break;
+			
+		case "Read an add":
+			activityResult = "You read an Ad on " + activityTo.getElementId() + " element";
+			break;
+		}	
+		return activityResult;
+	}
 	
 	//Sprint2: Write the GET /playground/elements/{userPlayground}/{email}/all
 	@RequestMapping(

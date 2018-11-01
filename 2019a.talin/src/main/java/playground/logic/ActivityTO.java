@@ -21,23 +21,24 @@ public class ActivityTO {
 		this.id = "0";
 		this.elementPlayground = "2019a.talin";
 		this.elementId = "0";
-		this.type = "Animal";
+		this.type = "feed";
 		this.playerPlayground = "2019a.talin";
 		this.playerEmail = "email@gmail.com";
 		this.attributes = new HashMap<>();
+		this.attributes.put("eat", "meat");
 	}
 	
-	public ActivityTO(String playground, String id, String elementPlayground, String elementId, String type,
+	public ActivityTO(String elementPlayground, String elementId, String type,
 			String playerPlayground, String playerEmail, Map<String, Object> attributes) {
 		super();
-		this.playground = playground;
-		this.id = id;
-		this.elementPlayground = elementPlayground;
-		this.elementId = elementId;
-		this.type = type;
-		this.playerPlayground = playerPlayground;
-		this.playerEmail = playerEmail;
-		this.attributes = attributes;
+		this.playground = "2019a.talin";
+		this.id = "0";
+		setElementPlayground(elementPlayground);
+		setElementId(elementId);
+		setType(type);
+		setPlayerPlayground(playerPlayground);
+		setPlayerEmail(playerEmail);
+		setAttributes(attributes);
 	}
 	public String getPlayground() {
 		return playground;
@@ -86,6 +87,13 @@ public class ActivityTO {
 	}
 	public void setAttributes(Map<String, Object> attributes) {
 		this.attributes = attributes;
+	}
+	
+	@Override
+	public String toString() {
+		return "ActivityTO [playground=" + playground + ", id=" + id + ", elementPlayground=" + elementPlayground
+				+ ", elementId=" + elementId + ", type=" + type + ", playerPlayground=" + playerPlayground
+				+ ", playerEmail=" + playerEmail + ", attributes=" + attributes + "]";
 	}
 
 }

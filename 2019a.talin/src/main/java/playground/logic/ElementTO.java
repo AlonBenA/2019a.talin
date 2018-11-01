@@ -108,8 +108,13 @@ public class ElementTO {
 	public void setCreatorEmail(String creatorEmail) {
 		this.creatorEmail = creatorEmail;
 	}
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "ElementTO [playground=" + playground + ", id=" + id + ", location=" + location + ", name=" + name
+				+ ", creationDate=" + creationDate + ", exirationDate=" + exirationDate + ", type=" + type
+				+ ", attributes=" + attributes + ", creatorPlayground=" + creatorPlayground + ", creatorEmail="
+				+ creatorEmail + "]";
+	}	
 	
 }
