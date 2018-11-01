@@ -21,6 +21,7 @@ import playground.logic.ElementTO;
 import playground.logic.Location;
 import playground.logic.Message;
 import playground.logic.MessageGenerator;
+import playground.logic.UserTo;
 
 /**
  * @author Tali
@@ -235,7 +236,52 @@ public class WebUI {
 		//DO something
 		
 	}
-
+	
+	//Sprint2: Write the PUT /playground/users/{playground}/{email}
+	@RequestMapping(
+			method=RequestMethod.PUT,
+			path="/playground/users/{playground}/{email}",
+			consumes=MediaType.APPLICATION_JSON_VALUE)
+	public void updateUser (
+			@PathVariable("playground") String playground,
+			@PathVariable("email") String email,
+			@RequestBody UserTo newUser) throws Exception {
+		validateNull(email);
+	}
+	
+	//Sprint2: Write the /playground/elements/{userPlayground }/{email}
+	@RequestMapping(
+			method=RequestMethod.POST,
+			path="/playground/elements/{userPlayground }/{email}",
+			produces=MediaType.APPLICATION_JSON_VALUE,
+			consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ElementTO updateElement (
+			@PathVariable("userPlayground") String userPlayground,
+			@PathVariable("email") String email, 
+			@RequestBody ElementTO elementTO) {
+		
+		return elementTO;
+	}
+	
+	
+	//Sprint2: Write the GET /playground/elements/{userPlayground}/{email}/{playground}/{id}
+	@RequestMapping(
+			method=RequestMethod.GET,
+			path="/playground/elements/{userPlayground}/{email}/{playground}/{id}",
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	public ElementTO getElement (
+			@PathVariable("userPlayground") String userPlayground,
+			@PathVariable("email") String email,
+			@PathVariable("playground") String playground,
+			@PathVariable("id") String id) {
+		
+		List<ElementTO> elements = getListOfElementsTO();
+		
+		return elements.get(Integer.parseInt(id));		
+	}
+	
+	
+	
 }
 
 
