@@ -22,6 +22,7 @@ import playground.logic.Location;
 import playground.logic.Message;
 import playground.logic.MessageGenerator;
 import playground.logic.UserTo;
+//import playground.logic.NewUserForm;
 
 /**
  * @author Tali
@@ -280,6 +281,66 @@ public class WebUI {
 		return elements.get(Integer.parseInt(id));		
 	}
 	
+	//////////////////////////////////////////////////////////////////////////SAP
+	//Sprint2: Write the GET /playground/users/login/{playground}/{email}
+	@RequestMapping(
+			method=RequestMethod.GET,
+			path="/playground/users/login/{playground}/{email}",
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	public UserTo login (@PathVariable("playground") String userPlayground,@PathVariable("email") String email) throws Exception {
+		
+		List<UserTo> users = getListOfUserTO();
+		for (int i = 0; i < users.size(); i++) 
+			if(users.get(i).getEmail() == email && users.get(i).getPlayground() == userPlayground)
+				return users.get(i);	
+		
+		throw new Exception(); // user not found
+	}
+	
+	public List<UserTo> getListOfUserTO()
+	{
+		String email1 = "usermail1@usermail.com";
+		String email2 = "usermail2@usermail.com";
+		String playground1 = "2019a.Talin";
+		String playground2 = "2019a.Talin";
+		String username1 = "username1";
+		String username2 = "username2";
+		String avatar1 = "avatar1";
+		String avatar2 = "avatar2";
+		String role1 = "Manager";
+		String role2 = "Player";
+		long points1 = 0;
+		long points2 = 20;
+		
+		List<UserTo> users = Arrays.asList(
+				new UserTo(email1, playground1, username1, avatar1, role1, points1),
+				new UserTo(email2, playground2, username2, avatar2, role2, points2)
+				);
+		
+		return users;
+	}
+	
+	//Sprint2: Write the GET /playground/users/confirm/{playground}/{email}/{code}
+		@RequestMapping(
+				method=RequestMethod.GET,
+				path="/playground/users/confirm/{playground}/{email}/{code}",
+				produces=MediaType.APPLICATION_JSON_VALUE)
+		public UserTo userValidate (@PathVariable("playground") String userPlayground,@PathVariable("email") String email, @PathVariable("code") String code) throws Exception {
+			
+			UserTo user = null;
+			List<UserTo> users = getListOfUserTO();
+			for (int i = 0; i < users.size(); i++) 
+				if(email.equals(users.get(i).getEmail()) && userPlayground.equals(users.get(i).getPlayground()))
+					user = users.get(i);
+			
+			if (user != null)
+				if (code.equals("1234"))
+					return user;
+			
+			throw new Exception(); // user not found	
+		}
+	
+
 	
 	
 }
