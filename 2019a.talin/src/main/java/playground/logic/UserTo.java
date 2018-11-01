@@ -12,11 +12,11 @@ public class UserTo {
 	}
 	
 	
-	public UserTo(String email, String playground, String usernam, String avatar, String role, long points) {
+	public UserTo(String email, String playground, String username, String avatar, String role, long points) {
 		super();
 		setEmail(email);
 		setPlayground(playground);
-		setUsername(usernam);
+		setUsername(username);
 		setAvatar(avatar);
 		setRole(role);
 		setPoints(points);
