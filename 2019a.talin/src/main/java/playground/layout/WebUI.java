@@ -324,7 +324,7 @@ public class WebUI {
 		
 		List<UserTo> users = getListOfUserTO();
 		for (int i = 0; i < users.size(); i++) 
-			if(users.get(i).getEmail() == email && users.get(i).getPlayground() == userPlayground)
+			if(email.equals(users.get(i).getEmail()) && userPlayground.equals(users.get(i).getPlayground()))
 				return users.get(i);	
 		
 		throw new Exception(); // user not found
