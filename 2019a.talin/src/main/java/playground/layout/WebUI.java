@@ -22,7 +22,7 @@ import playground.logic.Location;
 import playground.logic.Message;
 import playground.logic.MessageGenerator;
 import playground.logic.UserTo;
-//import playground.logic.NewUserForm;
+import playground.logic.NewUserForm;
 
 /**
  * @author Tali
@@ -211,7 +211,40 @@ public class WebUI {
 		return elements.get(Integer.parseInt(id));		
 	}
 	
-	//////////////////////////////////////////////////////////////////////////SAP
+	
+	//Sprint2: Write the POST /playground/users
+	@RequestMapping(
+			method=RequestMethod.POST,
+			path="/playground/users",
+			produces=MediaType.APPLICATION_JSON_VALUE,
+			consumes=MediaType.APPLICATION_JSON_VALUE)
+	public UserTo userSignup (@RequestBody NewUserForm newUserForm) {
+		UserTo user = new UserTo(newUserForm.getEmail(),"2019a.Talin",newUserForm.getUsername(),newUserForm.getAvatar(),newUserForm.getRole(),20);
+		return user;
+	}
+	
+	
+	//Sprint2: Write the GET /playground/users/confirm/{playground}/{email}/{code}
+	@RequestMapping(
+			method=RequestMethod.GET,
+			path="/playground/users/confirm/{playground}/{email}/{code}",
+			produces=MediaType.APPLICATION_JSON_VALUE)
+	public UserTo userValidate (@PathVariable("playground") String userPlayground,@PathVariable("email") String email, @PathVariable("code") String code) throws Exception {
+		
+		UserTo user = null;
+		List<UserTo> users = getListOfUserTO();
+		for (int i = 0; i < users.size(); i++) 
+			if(email.equals(users.get(i).getEmail()) && userPlayground.equals(users.get(i).getPlayground()))
+				user = users.get(i);
+		
+		if (user != null)
+			if (code.equals("1234"))
+				return user;
+		
+		throw new Exception(); // user not found	
+	}
+	
+	
 	//Sprint2: Write the GET /playground/users/login/{playground}/{email}
 	@RequestMapping(
 			method=RequestMethod.GET,
@@ -221,7 +254,7 @@ public class WebUI {
 		
 		List<UserTo> users = getListOfUserTO();
 		for (int i = 0; i < users.size(); i++) 
-			if(users.get(i).getEmail() == email && users.get(i).getPlayground() == userPlayground)
+			if(email.equals(users.get(i).getEmail()) && userPlayground.equals(users.get(i).getPlayground()))
 				return users.get(i);	
 		
 		throw new Exception(); // user not found
@@ -250,25 +283,9 @@ public class WebUI {
 		return users;
 	}
 	
-	//Sprint2: Write the GET /playground/users/confirm/{playground}/{email}/{code}
-		@RequestMapping(
-				method=RequestMethod.GET,
-				path="/playground/users/confirm/{playground}/{email}/{code}",
-				produces=MediaType.APPLICATION_JSON_VALUE)
-		public UserTo userValidate (@PathVariable("playground") String userPlayground,@PathVariable("email") String email, @PathVariable("code") String code) throws Exception {
-			
-			UserTo user = null;
-			List<UserTo> users = getListOfUserTO();
-			for (int i = 0; i < users.size(); i++) 
-				if(email.equals(users.get(i).getEmail()) && userPlayground.equals(users.get(i).getPlayground()))
-					user = users.get(i);
-			
-			if (user != null)
-				if (code.equals("1234"))
-					return user;
-			
-			throw new Exception(); // user not found	
-		}
+
+		
+
 	
 
 	
