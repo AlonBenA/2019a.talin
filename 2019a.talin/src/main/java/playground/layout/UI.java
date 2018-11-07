@@ -34,7 +34,7 @@ public class UI {
 		this.messageGenerator = messageGenerator;
 	}
 	
-	@PostConstruct
+//	@PostConstruct
 	public void showMessage () {
 //		String name = "Spring IoC Wolrd!";
 		
