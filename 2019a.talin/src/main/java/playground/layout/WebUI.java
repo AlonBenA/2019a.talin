@@ -37,7 +37,7 @@ public class WebUI {
 	
 	private void validateNull(String name) throws Exception {
 		if ("null".equals(name) || name == null) {
-			throw new Exception("message not found");
+			throw new Exception("user not found");
 		}
 	}
 
@@ -225,19 +225,21 @@ public class WebUI {
 			method=RequestMethod.GET,
 			path="/playground/users/confirm/{playground}/{email}/{code}",
 			produces=MediaType.APPLICATION_JSON_VALUE)
-	public UserTo userValidate (@PathVariable("playground") String userPlayground,@PathVariable("email") String email, @PathVariable("code") String code) throws Exception {
+	public UserTo userValidate (@PathVariable("playground") String userPlayground,@PathVariable("email") String email, @PathVariable("code") int code) throws Exception {
 		
-		UserTo user = null;
+		/*UserTo user = null;
 		List<UserTo> users = getListOfUserTO();
 		for (int i = 0; i < users.size(); i++) 
 			if(email.equals(users.get(i).getEmail()) && userPlayground.equals(users.get(i).getPlayground()))
 				user = users.get(i);
+		*/
+		validateNull(email);
+		validateNull(userPlayground);
 		
-		if (user != null)
-			if (code.equals("1234"))
-				return user;
+		if (code >= 0)
+			return new UserTo(email, userPlayground, "username", "https://goo.gl/images/WqDt96", "manager", 0);
 		
-		throw new Exception(); // user not found	
+		throw new RuntimeException("Wrong code"); // user not found	
 	}
 	
 	
@@ -248,15 +250,21 @@ public class WebUI {
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public UserTo login (@PathVariable("playground") String userPlayground,@PathVariable("email") String email) throws Exception {
 		
-		List<UserTo> users = getListOfUserTO();
+		/*List<UserTo> users = getListOfUserTO();
 		for (int i = 0; i < users.size(); i++) 
 			if(email.equals(users.get(i).getEmail()) && userPlayground.equals(users.get(i).getPlayground()))
 				return users.get(i);	
+		if("".equals(userPlayground))*/
 		
-		throw new Exception(); // user not found
+		validateNull(email);
+		validateNull(userPlayground);
+		
+		return new UserTo(email, userPlayground, "username", "https://goo.gl/images/WqDt96", "Manager", 0);
+		
+		//throw new Exception(); // user not found
 	}
 	
-	public List<UserTo> getListOfUserTO()
+	/*public List<UserTo> getListOfUserTO()
 	{
 		String email1 = "usermail1@usermail.com";
 		String email2 = "usermail2@usermail.com";
@@ -264,7 +272,7 @@ public class WebUI {
 		String playground2 = "2019a.Talin";
 		String username1 = "username1";
 		String username2 = "username2";
-		String avatar1 = "avatar1";
+		String avatar1 = "https://goo.gl/images/WqDt96";
 		String avatar2 = "avatar2";
 		String role1 = "Manager";
 		String role2 = "Player";
@@ -277,7 +285,7 @@ public class WebUI {
 				);
 		
 		return users;
-	}
+	}*/
 	
 
 		
