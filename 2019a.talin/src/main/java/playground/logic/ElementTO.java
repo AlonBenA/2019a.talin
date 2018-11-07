@@ -28,7 +28,7 @@ public class ElementTO {
 		this.exirationDate = null;
 		this.type = "Animal";
 		this.attributes = new HashMap<>();
-		this.creatorPlayground = "2019a.Talin";
+		this.creatorPlayground = "2019a.talin";
 		this.creatorEmail = "2019a.Talin@Gmail.com";
 	}
 	
