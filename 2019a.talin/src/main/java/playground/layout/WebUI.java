@@ -24,10 +24,6 @@ import playground.logic.MessageGenerator;
 import playground.logic.UserTo;
 import playground.logic.NewUserForm;
 
-/**
- * @author Tali
- *
- */
 @RestController
 public class WebUI {
 	
