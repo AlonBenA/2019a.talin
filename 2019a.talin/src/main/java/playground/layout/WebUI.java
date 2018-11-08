@@ -107,7 +107,12 @@ public class WebUI {
 			method=RequestMethod.GET,
 			path="/playground/elements/{userPlayground}/{email}/all",
 			produces=MediaType.APPLICATION_JSON_VALUE)
-	public ElementTO[] getAllElements (@PathVariable("userPlayground") String userPlayground,@PathVariable("email") String email) {
+	public ElementTO[] getAllElements (@PathVariable("userPlayground") String userPlayground,
+			@PathVariable("email") String email) throws Exception {
+		
+		validateNull(email);
+		validateNull(userPlayground);
+		
 		
 		List<ElementTO> elements = getListOfElementsTO();
 		
@@ -125,7 +130,10 @@ public class WebUI {
 			@PathVariable("email") String email,
 			@PathVariable("x") double x,
 			@PathVariable("y") double y,
-			@PathVariable("distan ce") double center) {
+			@PathVariable("distan ce") double center) throws Exception {
+		
+		validateNull(email);
+		validateNull(userPlayground);
 		
 		List<ElementTO> Allelements = getListOfElementsTO();
 		
@@ -169,6 +177,10 @@ public class WebUI {
 			@PathVariable("id") String id,
 			@RequestBody ElementTO newElement) throws Exception {
 		//DO something
+		
+		validateNull(email);
+		validateNull(userPlayground);
+		validateNull(playground);
 		
 	}
 	
