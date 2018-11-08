@@ -195,7 +195,6 @@ public class WebUI {
 			@RequestBody UserTo newUser) throws Exception {
 		validateNull(email);
 		validateNull(playground);
-
 	}
 	
 	//Sprint2: Write the POST /playground/elements/{userPlayground }/{email}
