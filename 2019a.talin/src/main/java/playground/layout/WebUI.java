@@ -48,7 +48,11 @@ public class WebUI {
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ElementTO[] getElementsWithAttribute(@PathVariable("userPlayground") String userPlayground,
 			@PathVariable("email") String email, @PathVariable("attributeName") String attributeName,
-			@PathVariable("value") String value) {
+			@PathVariable("value") String value) throws Exception {
+		
+		//validate user
+		validateNull(email);
+		validateNull(userPlayground);
 		
 		List<ElementTO> allElements = getListOfElementsTO();
 		List<ElementTO> elementsWithAttribute = new ArrayList<>();
@@ -69,7 +73,11 @@ public class WebUI {
 			consumes=MediaType.APPLICATION_JSON_VALUE)
 	public Object activateElement (
 			@PathVariable("userPlayground") String userPlayground,
-			@PathVariable("email") String email, @RequestBody ActivityTO activityTo) {
+			@PathVariable("email") String email, @RequestBody ActivityTO activityTo) throws Exception {
+		
+		//validate user
+		validateNull(email);
+		validateNull(userPlayground);
 		
 		String activityResult = "";
 		
@@ -91,7 +99,7 @@ public class WebUI {
 			activityResult = "You read an Ad on " + activityTo.getElementId() + " element";
 			break;
 		}	
-		return activityResult;
+		return new Message(activityResult);
 	}
 	
 	//Sprint2: Write the GET /playground/elements/{userPlayground}/{email}/all
