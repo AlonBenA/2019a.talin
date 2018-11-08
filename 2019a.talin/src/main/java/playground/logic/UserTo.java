@@ -1,5 +1,8 @@
 package playground.logic;
 
+import java.util.Date;
+import java.util.HashMap;
+
 public class UserTo {
 	private String email;
 	private String playground;
@@ -8,7 +11,14 @@ public class UserTo {
 	private String role;
 	private long points;
 	
-	public UserTo() {
+	public UserTo() {		
+		super();
+		this.playground = "2019a.talin";
+		this.username = "Animal";
+		this.avatar = "no avatar";
+		this.role = "player";
+		this.points = 0;
+		this.email = "2019a.Talin@Gmail.com";
 	}
 	
 	
