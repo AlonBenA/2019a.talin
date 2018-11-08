@@ -194,19 +194,22 @@ public class WebUI {
 			@PathVariable("email") String email,
 			@RequestBody UserTo newUser) throws Exception {
 		validateNull(email);
+		validateNull(playground);
+
 	}
 	
-	//Sprint2: Write the /playground/elements/{userPlayground }/{email}
+	//Sprint2: Write the POST /playground/elements/{userPlayground }/{email}
 	@RequestMapping(
 			method=RequestMethod.POST,
-			path="/playground/elements/{userPlayground }/{email}",
+			path="/playground/elements/{userPlayground}/{email}",
 			produces=MediaType.APPLICATION_JSON_VALUE,
 			consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ElementTO updateElement (
+	public ElementTO createElement (
 			@PathVariable("userPlayground") String userPlayground,
 			@PathVariable("email") String email, 
-			@RequestBody ElementTO elementTO) {
-		
+			@RequestBody ElementTO elementTO) throws Exception {
+		validateNull(email);
+		validateNull(userPlayground);
 		return elementTO;
 	}
 	
@@ -224,7 +227,7 @@ public class WebUI {
 		
 		List<ElementTO> elements = getListOfElementsTO();
 		
-		return elements.get(Integer.parseInt(id));		
+		return elements.get(0);		
 	}
 	
 	
