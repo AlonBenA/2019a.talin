@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,14 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import playground.logic.ActivityTO;
-import playground.logic.ElementTO;
 import playground.logic.Location;
 import playground.logic.Message;
 import playground.logic.MessageGenerator;
-import playground.logic.UserTo;
 import playground.logic.NewUserForm;
 
 @RestController
@@ -108,15 +108,32 @@ public class WebUI {
 			path="/playground/elements/{userPlayground}/{email}/all",
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ElementTO[] getAllElements (@PathVariable("userPlayground") String userPlayground,
-			@PathVariable("email") String email) throws Exception {
-		
-		validateNull(email);
-		validateNull(userPlayground);
-		
-		
-		List<ElementTO> elements = getListOfElementsTO();
-		
-		return elements.toArray(new ElementTO[0]);		
+			@PathVariable("email") String email,
+			@RequestParam(name="size", required=false, defaultValue="10") int size, 
+			@RequestParam(name="page", required=false, defaultValue="0") int page) throws Exception {
+			
+		try {
+			
+			
+			//delete after using stub
+			Location location = new Location();
+			Date exirationDate = null;
+			String type = "animal";
+			Map<String,Object> attributes = new HashMap<>();
+			String creatorPlayground = "2019a.talin";
+			String creatorEmail = "2019a.Talin@Gmail.com";
+					
+			//location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
+			return IntStream.range(0, 100) // int stream
+					.skip(size*page)
+					.limit(size)
+					.mapToObj(value -> new ElementTO(location,"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
+					.collect(Collectors.toList()) // ElementTO List
+					.toArray(new ElementTO[0]); // ElementTO[]
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Error while retrieving data");
+		}		
 	}
 	
 	
@@ -130,14 +147,35 @@ public class WebUI {
 			@PathVariable("email") String email,
 			@PathVariable("x") double x,
 			@PathVariable("y") double y,
-			@PathVariable("distan ce") double center) throws Exception {
+			@PathVariable("distan ce") double center,
+			@RequestParam(name="size", required=false, defaultValue="10") int size, 
+			@RequestParam(name="page", required=false, defaultValue="0") int page) throws Exception {
 		
-		validateNull(email);
-		validateNull(userPlayground);
 		
-		List<ElementTO> Allelements = getListOfElementsTO();
+		try {
+			
+			
+			//delete after using stub
+			Location location = new Location();
+			Date exirationDate = null;
+			String type = "animal";
+			Map<String,Object> attributes = new HashMap<>();
+			String creatorPlayground = "2019a.talin";
+			String creatorEmail = "2019a.Talin@Gmail.com";
+					
+			//location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
+			return IntStream.range(0, 100) // int stream
+					.skip(size*page)
+					.limit(size)
+					.mapToObj(value -> new ElementTO(location,"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
+					.collect(Collectors.toList()) // ElementTO List
+					.toArray(new ElementTO[0]); // ElementTO[]
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Error while retrieving data");
+		}	
 		
-		return Allelements.toArray(new ElementTO[0]);	
+		
 	}
 	
 	

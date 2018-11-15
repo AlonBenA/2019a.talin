@@ -1,8 +1,11 @@
-package playground.logic;
+package playground.layout;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import playground.logic.ElementEntity;
+import playground.logic.Location;
 
 public class ElementTO {
 
@@ -32,6 +35,8 @@ public class ElementTO {
 		this.creatorEmail = "2019a.Talin@Gmail.com";
 	}
 	
+	
+	
 	public ElementTO(Location location,String name,Date exirationDate,String type
 			,Map<String,Object> attributes,String creatorPlayground, String creatorEmail)
 	{
@@ -45,6 +50,20 @@ public class ElementTO {
 		setAttributes(attributes);
 		setCreatorPlayground(creatorPlayground);
 		setCreatorEmail(creatorEmail);
+	}
+	
+	public ElementTO(ElementEntity elementEntity)
+	{
+		this.playground = elementEntity.getPlayground();
+		this.id = elementEntity.getId();
+		this.location = elementEntity.getLocation();
+		this.name = elementEntity.getName();
+		this.creationDate = elementEntity.getCreationDate();
+		this.exirationDate = elementEntity.getExirationDate();
+		this.type = elementEntity.getType();
+		this.attributes = elementEntity.getAttributes();
+		this.creatorPlayground = elementEntity.getCreatorPlayground();
+		this.creatorEmail = elementEntity.getCreatorEmail();
 	}
 	
 	
@@ -107,6 +126,24 @@ public class ElementTO {
 	}
 	public void setCreatorEmail(String creatorEmail) {
 		this.creatorEmail = creatorEmail;
+	}
+	
+	
+	public ElementEntity convertFromElementTOToElementEntity()
+	{
+		ElementEntity elementEntity = new ElementEntity();
+		elementEntity.setAttributes(attributes);
+		elementEntity.setCreationDate(creationDate);
+		elementEntity.setCreatorEmail(creatorEmail);
+		elementEntity.setCreatorPlayground(creatorPlayground);
+		elementEntity.setExirationDate(exirationDate);
+		elementEntity.setId(id);
+		elementEntity.setLocation(location);
+		elementEntity.setName(name);
+		elementEntity.setPlayground(creatorPlayground);
+		elementEntity.setType(type);	
+		
+		return elementEntity;
 	}
 
 	@Override
