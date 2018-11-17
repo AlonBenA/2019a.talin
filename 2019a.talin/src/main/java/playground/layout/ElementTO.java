@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import playground.logic.ElementEntity;
 import playground.logic.Location;
+import playground.logic.Entities.ElementEntity;
 
 public class ElementTO {
 

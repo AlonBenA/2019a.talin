@@ -18,14 +18,13 @@ package java;
 	import org.springframework.test.context.junit4.SpringRunner;
 	import org.springframework.web.client.RestTemplate;
 
-	import playground.logic.MessageEntity;
-	import playground.logic.MessageService;
+import playground.logic.Services.PlaygroundService;
 
 	@RunWith(SpringRunner.class)
 	@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
 	public class WebUITests {
 		@Autowired
-		private MessageService messageService;
+		private PlaygroundService playgroundService;
 		
 		private RestTemplate restTemplate; 
 		

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,16 +22,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import playground.logic.ElementNotFoundException;
 import playground.logic.Location;
 import playground.logic.Message;
 import playground.logic.NewUserForm;
-import playground.logic.UserNotFoundException;
+import playground.logic.Entities.ActivityEntity;
+import playground.logic.Entities.ElementEntity;
+import playground.logic.Exceptions.ElementNotFoundException;
+import playground.logic.Exceptions.UserNotFoundException;
+import playground.logic.Services.PlaygroundService;
 
 @RestController
 public class WebUI {
 	
+	private PlaygroundService playgroundService;
 	private String defaultUserName;
+	
+
+	public PlaygroundService getPlaygroundService() {
+		return playgroundService;
+	}
+
+	@Autowired
+	public void setPlaygroundService(PlaygroundService playgroundService) {
+		this.playgroundService = playgroundService;
+	}
 
 	
 	@Value("${name.of.user.to.be.greeted:Anonymous}")
@@ -51,15 +66,21 @@ public class WebUI {
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public ElementTO[] getElementsWithAttribute(@PathVariable("userPlayground") String userPlayground,
 			@PathVariable("email") String email, @PathVariable("attributeName") String attributeName,
-			@PathVariable("value") String value) throws Exception {
+			@PathVariable("value") String value,
+			@RequestParam(name="size", required=false, defaultValue="10") int size, 
+			@RequestParam(name="page", required=false, defaultValue="0") int page) throws Exception {
 		
 		//validate user
 		validateNull(email);
 		validateNull(userPlayground);
 		
-		List<ElementTO> allElements = getListOfElementsTO();
+		List<ElementTO> allElements = 
+				playgroundService.getAllElements(size, page) // list of entities
+				.stream() // stream of entities
+				.map(ElementTO::new) // stream of boundaries
+				.collect(Collectors.toList());// list of boundaries
+				
 		List<ElementTO> elementsWithAttribute = new ArrayList<>();
-		
 		for(ElementTO element: allElements)
 			if(element.getAttributes().containsKey(attributeName))
 				if(element.getAttributes().get(attributeName).equals(value))
@@ -82,27 +103,12 @@ public class WebUI {
 		validateNull(email);
 		validateNull(userPlayground);
 		
-		String activityResult = "";
+		boolean activityResult =  playgroundService.validateActivityType(activityTo.getType());
 		
-		switch(activityTo.getType())
-		{
-		case "Play":
-			activityResult = "You have played with " + activityTo.getElementId() + " element";
-			break;
-			
-		case "Feed":
-			activityResult = "You fed " + activityTo.getElementId() + " element";
-			break;
-			
-		case "Place an add":
-			activityResult = "You placed an Ad on " + activityTo.getElementId() + " element";
-			break;
-			
-		case "Read an add":
-			activityResult = "You read an Ad on " + activityTo.getElementId() + " element";
-			break;
-		}	
-		return new Message(activityResult);
+		if(activityResult)
+			return new Message(activityTo.getType() + ": with" + activityTo.getElementId() + " element");
+		
+		else throw new RuntimeException("Invalid Activity Type");
 	}
 	
 	//Sprint2: Write the GET /playground/elements/{userPlayground}/{email}/all
@@ -115,24 +121,12 @@ public class WebUI {
 			@RequestParam(name="size", required=false, defaultValue="10") int size, 
 			@RequestParam(name="page", required=false, defaultValue="0") int page) throws Exception {
 			
-		try {
-			
-			
-			//delete after using stub
-			Location location = new Location();
-			Date exirationDate = null;
-			String type = "animal";
-			Map<String,Object> attributes = new HashMap<>();
-			String creatorPlayground = "2019a.talin";
-			String creatorEmail = "2019a.Talin@Gmail.com";
-					
-			//location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
-			return IntStream.range(0, 100) // int stream
-					.skip(size*page)
-					.limit(size)
-					.mapToObj(value -> new ElementTO(location,"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
-					.collect(Collectors.toList()) // ElementTO List
-					.toArray(new ElementTO[0]); // ElementTO[]
+		try {		
+				return playgroundService.getAllElements(size, page) // list of entities
+				.stream() // stream of entities
+				.map(ElementTO::new) // stream of boundaries
+				.collect(Collectors.toList())// list of boundaries
+				.toArray(new ElementTO[0]); // ElementTO[]
 			
 		} catch (Exception e) {
 			throw new RuntimeException("Error while retrieving data");

@@ -3,6 +3,9 @@ package playground.layout;
 import java.util.HashMap;
 import java.util.Map;
 
+import playground.logic.Entities.ActivityEntity;
+import playground.logic.Entities.ElementEntity;
+
 public class ActivityTO {
 	
 	private String playground;
@@ -40,6 +43,19 @@ public class ActivityTO {
 		setPlayerEmail(playerEmail);
 		setAttributes(attributes);
 	}
+	
+	public ActivityTO(ActivityEntity activityEntity)
+	{
+		setPlayground(activityEntity.getPlayground());
+		setId(activityEntity.getId());
+		setElementPlayground(activityEntity.getElementPlayground());
+		setElementId(activityEntity.getElementId());
+		setType(activityEntity.getType());
+		setPlayerPlayground(activityEntity.getPlayerPlayground());
+		setPlayerEmail(activityEntity.getPlayerEmail());
+		setAttributes(activityEntity.getAttributes());
+	}
+	
 	public String getPlayground() {
 		return playground;
 	}
@@ -94,6 +110,20 @@ public class ActivityTO {
 		return "ActivityTO [playground=" + playground + ", id=" + id + ", elementPlayground=" + elementPlayground
 				+ ", elementId=" + elementId + ", type=" + type + ", playerPlayground=" + playerPlayground
 				+ ", playerEmail=" + playerEmail + ", attributes=" + attributes + "]";
+	}
+	
+	public ActivityEntity convertFromActivityTOToActivityEntity()
+	{
+		ActivityEntity activityEntity = new ActivityEntity();
+		activityEntity.setPlayground(playground);
+		activityEntity.setId(id);
+		activityEntity.setElementPlayground(elementPlayground);
+		activityEntity.setElementId(elementId);
+		activityEntity.setPlayerPlayground(playerPlayground);
+		activityEntity.setPlayerEmail(playerEmail);
+		activityEntity.setType(type);
+		activityEntity.setAttributes(attributes);
+		return activityEntity;
 	}
 
 }
