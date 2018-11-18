@@ -264,20 +264,18 @@ public class WebUI {
 		return elements.get(0);		
 	}
 	
-	
-	//Sprint2: Write the POST /playground/users
+	// Rest api 1 - Sapir 
 	@RequestMapping(
 			method=RequestMethod.POST,
 			path="/playground/users",
 			produces=MediaType.APPLICATION_JSON_VALUE,
 			consumes=MediaType.APPLICATION_JSON_VALUE)
 	public UserTo userSignup (@RequestBody NewUserForm newUserForm) {
-		UserTo user = new UserTo(newUserForm.getEmail(),"2019a.Talin",newUserForm.getUsername(),newUserForm.getAvatar(),newUserForm.getRole(),20);
+		UserTo user = new UserTo(newUserForm.getEmail(),"2019a.Talin",newUserForm.getUsername(),newUserForm.getAvatar(),newUserForm.getRole(),0);
 		return user;
 	}
 	
-	
-	//Sprint2: Write the GET /playground/users/confirm/{playground}/{email}/{code}
+	// Rest api 2 - Sapir
 	@RequestMapping(
 			method=RequestMethod.GET,
 			path="/playground/users/confirm/{playground}/{email}/{code}",
@@ -299,8 +297,7 @@ public class WebUI {
 		throw new RuntimeException("Wrong code"); // user not found	
 	}
 	
-	
-	//Sprint2: Write the GET /playground/users/login/{playground}/{email}
+	// Rest api 3 - Sapir
 	@RequestMapping(
 			method=RequestMethod.GET,
 			path="/playground/users/login/{playground}/{email}",
@@ -340,30 +337,6 @@ public class WebUI {
 		}
 		return new ErrorMessage(errorMessage);
 	}
-	
-	
-	/*public List<UserTo> getListOfUserTO()
-	{
-		String email1 = "usermail1@usermail.com";
-		String email2 = "usermail2@usermail.com";
-		String playground1 = "2019a.Talin";
-		String playground2 = "2019a.Talin";
-		String username1 = "username1";
-		String username2 = "username2";
-		String avatar1 = "https://goo.gl/images/WqDt96";
-		String avatar2 = "avatar2";
-		String role1 = "Manager";
-		String role2 = "Player";
-		long points1 = 0;
-		long points2 = 20;
-		
-		List<UserTo> users = Arrays.asList(
-				new UserTo(email1, playground1, username1, avatar1, role1, points1),
-				new UserTo(email2, playground2, username2, avatar2, role2, points2)
-				);
-		
-		return users;
-	}*/
 	
 
 		

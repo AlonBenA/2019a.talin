@@ -23,6 +23,14 @@ import playground.logic.Exceptions.ElementNotFoundException;
 public class PlaygroundServiceStub implements PlaygroundService{
 	//private Map<String, UserEntity> usersDatabase;
 	private Map<String, ElementEntity> elementsDatabase;
+	private Map<String, ActivityEntity> activitiesDatabase;
+	
+	@PostConstruct
+	public void init() {
+		//this.usersDatabase = new HashMap<>();
+		setElementsDatabase(elementsDatabase);
+		this.activitiesDatabase = new HashMap<>();
+	}
 	
 	public void setElementsDatabase(Map<String, ElementEntity> elementsDatabase) {
 		Location location = new Location();
@@ -44,14 +52,7 @@ public class PlaygroundServiceStub implements PlaygroundService{
 				.collect(Collectors.toMap(ElementEntity::getId, Function.identity()));
 	}
 
-	private Map<String, ActivityEntity> activitiesDatabase;
-	
-	@PostConstruct
-	public void init() {
-		//this.usersDatabase = new HashMap<>();
-		setElementsDatabase(elementsDatabase);
-		this.activitiesDatabase = new HashMap<>();
-	}
+
 
 	@Override
 	public void addNewElement(ElementEntity elementEntity) {

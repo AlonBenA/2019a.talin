@@ -1,7 +1,6 @@
 package playground.layout;
 
-import java.util.Date;
-import java.util.HashMap;
+import playground.logic.Entities.UserEntity;
 
 public class UserTo {
 	private String email;
@@ -13,14 +12,15 @@ public class UserTo {
 	
 	public UserTo() {		
 		super();
+		/*
+		this.email = "2019a.talin@gmail.com";
 		this.playground = "2019a.talin";
-		this.username = "Animal";
+		this.username = "User";
 		this.avatar = "no avatar";
-		this.role = "player";
+		this.role = "Player";
 		this.points = 0;
-		this.email = "2019a.Talin@Gmail.com";
+		*/
 	}
-	
 	
 	public UserTo(String email, String playground, String username, String avatar, String role, long points) {
 		super();
@@ -30,6 +30,16 @@ public class UserTo {
 		setAvatar(avatar);
 		setRole(role);
 		setPoints(points);
+	}
+	
+	public UserTo(UserEntity userEntity) {
+		super();
+		setEmail(userEntity.getEmail());
+		setPlayground(userEntity.getPlayground());
+		setUsername(userEntity.getUsername());
+		setAvatar(userEntity.getAvatar());
+		setRole(userEntity.getRole());
+		setPoints(userEntity.getPoints());
 	}
 	
 	
@@ -79,6 +89,26 @@ public class UserTo {
 
 	public void setPoints(long points) {
 		this.points = points;
+	}
+
+
+	@Override
+	public String toString() {
+		return "[email = " + email + ", playground = " + playground + ", username= " + username + ", avatar = " + avatar
+				+ ", role = " + role + ", points = " + points + "]";
+	}
+	
+	public UserEntity convertFromUserTOToUserEntity() {
+		
+		UserEntity userEntity = new UserEntity();
+		userEntity.setEmail(email);
+		userEntity.setPlayground(playground);
+		userEntity.setUsername(username);
+		userEntity.setAvatar(avatar);
+		userEntity.setRole(role);
+		userEntity.setPoints(points);
+		
+		return userEntity;
 	}
 	
 }
