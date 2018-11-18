@@ -8,6 +8,7 @@ import playground.logic.Location;
 
 public class ElementEntity {
 
+	private static int ID = 0;
 
 	private String playground; 
 	private String id;
@@ -24,7 +25,7 @@ public class ElementEntity {
 	public ElementEntity() {
 		super();
 		this.playground = "2019a.talin";
-		this.id = getRandomID();
+		this.id = getID();
 		this.location = new Location(0, 0);
 		this.name = "Animal";
 		this.creationDate = new Date();
@@ -39,7 +40,7 @@ public class ElementEntity {
 			,Map<String,Object> attributes,String creatorPlayground, String creatorEmail)
 	{
 		this.playground = "2019a.talin";
-		this.id = getRandomID();
+		this.id = getID();
 		setLocation(location);
 		setName(name);
 		this.creationDate = new Date();
@@ -50,9 +51,9 @@ public class ElementEntity {
 		setCreatorEmail(creatorEmail);
 	}
 	
-	private String getRandomID()
+	private String getID()
 	{
-		int i = (int)(Math.random() * 1000) + 0;
+		int i = ID++;
 		return i+"";
 	}
 	

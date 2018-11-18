@@ -125,4 +125,17 @@ public class PlaygroundServiceStub implements PlaygroundService{
 		return result;
 	}
 
+	public Map<String, ActivityEntity> getActivitiesDatabase() {
+		return activitiesDatabase;
+	}
+
+	public void setActivitiesDatabase(Map<String, ActivityEntity> activitiesDatabase) {
+		this.activitiesDatabase = activitiesDatabase;
+	}
+
+	public Map<String, ElementEntity> getElementsDatabase() {
+		return elementsDatabase;
+	}
+	
+
 }
