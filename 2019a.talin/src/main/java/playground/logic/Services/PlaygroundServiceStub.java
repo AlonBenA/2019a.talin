@@ -33,7 +33,6 @@ public class PlaygroundServiceStub implements PlaygroundService{
 	}
 	
 	public void setElementsDatabase(Map<String, ElementEntity> elementsDatabase) {
-		Location location = new Location();
 		Date exirationDate = null;
 		String type = "animal";
 		String creatorPlayground = "2019a.talin";
@@ -48,7 +47,7 @@ public class PlaygroundServiceStub implements PlaygroundService{
 				
 		//location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
 		this.elementsDatabase = IntStream.range(0, 100) // int stream
-				.mapToObj(value -> new ElementEntity(location,"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
+				.mapToObj(value -> new ElementEntity(new Location(value,value),"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
 				.collect(Collectors.toMap(ElementEntity::getId, Function.identity()));
 	}
 
