@@ -25,4 +25,6 @@ public interface PlaygroundService {
 	public List<ElementEntity> getAllElements(int size, int page);
 	
 	public boolean validateActivityType(String type);
+	
+	public List<ElementEntity> getAllNearElements(double x,double y, double distance);
 }

@@ -12,14 +12,6 @@ public class UserTo {
 	
 	public UserTo() {		
 		super();
-		/*
-		this.email = "2019a.talin@gmail.com";
-		this.playground = "2019a.talin";
-		this.username = "User";
-		this.avatar = "no avatar";
-		this.role = "Player";
-		this.points = 0;
-		*/
 	}
 	
 	public UserTo(String email, String playground, String username, String avatar, String role, long points) {

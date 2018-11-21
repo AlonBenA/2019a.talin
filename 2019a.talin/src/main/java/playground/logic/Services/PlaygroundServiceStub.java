@@ -137,5 +137,12 @@ public class PlaygroundServiceStub implements PlaygroundService{
 		return elementsDatabase;
 	}
 	
+	public List<ElementEntity> getAllNearElements(double x,double y, double distance)
+	{
+		
+		
+		return null;
+	}
+	
 
 }

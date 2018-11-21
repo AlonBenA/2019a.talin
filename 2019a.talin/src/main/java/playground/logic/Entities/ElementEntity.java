@@ -3,13 +3,13 @@ package playground.logic.Entities;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import playground.logic.Location;
 
 public class ElementEntity {
 
-	private static int ID = 0;
-
+	private static AtomicLong IDGiver = new AtomicLong(0) ;
 	private String playground; 
 	private String id;
 	private Location location;
@@ -53,8 +53,7 @@ public class ElementEntity {
 	
 	private String getID()
 	{
-		int i = ID++;
-		return i+"";
+		return IDGiver.incrementAndGet()+"";
 	}
 	
 	
