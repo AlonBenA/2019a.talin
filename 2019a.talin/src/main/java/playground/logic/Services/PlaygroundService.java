@@ -16,7 +16,7 @@ public interface PlaygroundService {
 
 	//public UserEntity getUser(String user_id) throws UserNotFoundException;
 	
-	public ElementEntity getElement(String element_id) throws ElementNotFoundException;
+	public ElementEntity getElement(String element_id,String element_Playground) throws ElementNotFoundException;
 	
 	public ActivityEntity getActivity(String activity_id) throws Exception;
 	
@@ -26,5 +26,8 @@ public interface PlaygroundService {
 	
 	public boolean validateActivityType(String type);
 	
-	public List<ElementEntity> getAllNearElements(double x,double y, double distance);
+	public List<ElementEntity> getAllNearElements(double x,double y, double distance,int size,int page);
+	
+	public void updateElement(ElementEntity updatedElementEntity,String playground,String id) throws Exception;
+	
 }

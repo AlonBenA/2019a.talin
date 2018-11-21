@@ -148,29 +148,15 @@ public class WebUI {
 			@RequestParam(name="size", required=false, defaultValue="10") int size, 
 			@RequestParam(name="page", required=false, defaultValue="0") int page) throws Exception {
 		
-		
-		try {
-			
-			
-			//delete after using stub
-			Location location = new Location();
-			Date exirationDate = null;
-			String type = "animal";
-			Map<String,Object> attributes = new HashMap<>();
-			String creatorPlayground = "2019a.talin";
-			String creatorEmail = "2019a.Talin@Gmail.com";
-					
-			//location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
-			return IntStream.range(0, 100) // int stream
-					.skip(size*page)
-					.limit(size)
-					.mapToObj(value -> new ElementTO(location,"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
-					.collect(Collectors.toList()) // ElementTO List
-					.toArray(new ElementTO[0]); // ElementTO[]
-			
-		} catch (Exception e) {
-			throw new RuntimeException("Error while retrieving data");
-		}	
+			return playgroundService.getAllNearElements(x, y, center, size, page)
+					.stream()
+					.map(ElementTO::new)
+					.collect(Collectors.toList())
+					.toArray(new ElementTO[0]);
+
+
+			//throw new RuntimeException("Error while retrieving data");
+
 		
 		
 	}
@@ -210,12 +196,9 @@ public class WebUI {
 			@PathVariable("email") String email,
 			@PathVariable("playground") String playground,
 			@PathVariable("id") String id,
-			@RequestBody ElementTO newElement) throws Exception {
-		//DO something
+			@RequestBody ElementTO updatedElement) throws Exception {
 		
-		validateNull(email);
-		validateNull(userPlayground);
-		validateNull(playground);
+		playgroundService.updateElement(updatedElement.convertFromElementTOToElementEntity(), playground, id);
 		
 	}
 	

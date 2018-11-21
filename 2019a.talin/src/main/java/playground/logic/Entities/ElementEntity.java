@@ -9,7 +9,6 @@ import playground.logic.Location;
 
 public class ElementEntity {
 
-	private static AtomicLong IDGiver = new AtomicLong(0) ;
 	private String playground; 
 	private String id;
 	private Location location;
@@ -25,7 +24,7 @@ public class ElementEntity {
 	public ElementEntity() {
 		super();
 		this.playground = "2019a.talin";
-		this.id = getID();
+		this.id = "0";
 		this.location = new Location(0, 0);
 		this.name = "Animal";
 		this.creationDate = new Date();
@@ -36,11 +35,11 @@ public class ElementEntity {
 		this.creatorEmail = "2019a.Talin@Gmail.com";
 	}
 	
-	public ElementEntity(Location location,String name,Date exirationDate,String type
+	public ElementEntity(String id,Location location,String name,Date exirationDate,String type
 			,Map<String,Object> attributes,String creatorPlayground, String creatorEmail)
 	{
 		this.playground = "2019a.talin";
-		this.id = getID();
+		this.id = id;
 		setLocation(location);
 		setName(name);
 		this.creationDate = new Date();
@@ -50,12 +49,6 @@ public class ElementEntity {
 		setCreatorPlayground(creatorPlayground);
 		setCreatorEmail(creatorEmail);
 	}
-	
-	private String getID()
-	{
-		return IDGiver.incrementAndGet()+"";
-	}
-	
 	
 	public String getPlayground() {
 		return playground;

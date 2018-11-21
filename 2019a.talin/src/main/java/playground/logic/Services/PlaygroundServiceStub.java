@@ -1,5 +1,6 @@
 package playground.logic.Services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,7 @@ public class PlaygroundServiceStub implements PlaygroundService{
 	@PostConstruct
 	public void init() {
 		//this.usersDatabase = new HashMap<>();
-		setElementsDatabase(elementsDatabase);
+		//setElementsDatabase(elementsDatabase);
 		this.activitiesDatabase = new HashMap<>();
 	}
 	
@@ -47,15 +48,15 @@ public class PlaygroundServiceStub implements PlaygroundService{
 				
 		//location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
 		this.elementsDatabase = IntStream.range(0, 100) // int stream
-				.mapToObj(value -> new ElementEntity(new Location(value,value),"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
+				.mapToObj(value -> new ElementEntity(value+"",new Location(value,value),"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
 				.collect(Collectors.toMap(ElementEntity::getId, Function.identity()));
 	}
 
 
 
 	@Override
-	public void addNewElement(ElementEntity elementEntity) {
-		this.elementsDatabase.put(elementEntity.getId(), elementEntity);
+	public synchronized void addNewElement(ElementEntity elementEntity) {
+		this.elementsDatabase.put(elementEntity.getPlayground()+elementEntity.getId(), elementEntity);
 	}
 
 	@Override
@@ -65,10 +66,10 @@ public class PlaygroundServiceStub implements PlaygroundService{
 	}
 
 	@Override
-	public ElementEntity getElement(String element_id) throws ElementNotFoundException {
-		ElementEntity rv =  this.elementsDatabase.get(element_id);
+	public ElementEntity getElement(String element_id,String element_Playground) throws ElementNotFoundException {
+		ElementEntity rv =  this.elementsDatabase.get(element_Playground+element_id);
 		if (rv == null) {
-			throw new ElementNotFoundException("could not find element by id: " + element_id);
+			throw new ElementNotFoundException("could not find element by id: " + element_Playground+element_id);
 		}
 		return rv;
 	}
@@ -90,7 +91,7 @@ public class PlaygroundServiceStub implements PlaygroundService{
 	}
 
 	@Override
-	public List<ElementEntity> getAllElements(int size, int page) {
+	public synchronized List<ElementEntity> getAllElements(int size, int page) {
 		return this.elementsDatabase
 				.values() // collection of entities
 				.stream() // stream of entities
@@ -137,12 +138,57 @@ public class PlaygroundServiceStub implements PlaygroundService{
 		return elementsDatabase;
 	}
 	
-	public List<ElementEntity> getAllNearElements(double x,double y, double distance)
+	public synchronized List<ElementEntity> getAllNearElements(double x,double y, double distance,int size,int page)
 	{
-		
-		
-		return null;
+		return
+				this.elementsDatabase.values()
+				.stream() // stream of entities
+				.filter(ent-> Math.abs(ent.getLocation().getX()-x) < distance)
+				.filter(ent-> Math.abs(ent.getLocation().getY()-y) < distance)
+				.skip(size*page)
+				.limit(size)
+				.collect(Collectors.toList());		
 	}
 	
+	@Override
+	public synchronized void updateElement(ElementEntity updatedElementEntity, String playground, String id) throws Exception {
+		
+		if(this.elementsDatabase.containsKey(playground+id))
+		{
+			ElementEntity elementEntity = this.elementsDatabase.get(playground+id);
+			
+			if(!elementEntity.getLocation().equals(updatedElementEntity.getLocation()))
+			{
+				elementEntity.setLocation(updatedElementEntity.getLocation());
+			}
+			
+			if(!elementEntity.getName().equals(updatedElementEntity.getName()))
+			{
+				elementEntity.setName(updatedElementEntity.getName());
+			}
+			
+			if(!elementEntity.getExirationDate().equals(updatedElementEntity.getExirationDate()))
+			{
+				elementEntity.setExirationDate(updatedElementEntity.getExirationDate());
+			}
+			
+			if(!elementEntity.getType().equals(updatedElementEntity.getType()))
+			{
+				elementEntity.setType(updatedElementEntity.getType());
+			}
+			
+			if(!elementEntity.getAttributes().equals(updatedElementEntity.getAttributes()))
+			{
+				elementEntity.setAttributes(updatedElementEntity.getAttributes());
+			}
+			
+			this.elementsDatabase.put(playground+id, elementEntity);
+		
+		}
+		else {
+			throw new ElementNotFoundException("Did not found the element");
+		}
+		
+	}
 
 }
