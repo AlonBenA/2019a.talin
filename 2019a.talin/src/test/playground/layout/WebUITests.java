@@ -61,7 +61,7 @@ public class WebUITests {
 	public void teardown() {
 		// cleanup database
 		// this.messageService.cleanup();
-		
+		this.playgroundService.cleanup();
 		
 	}
 	
@@ -83,14 +83,14 @@ public class WebUITests {
 		}
 				
 		//location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
-		IntStream.range(0, 100) // int stream
+		IntStream.range(0, numberOFElements) // int stream
 				.mapToObj(value -> new ElementEntity(value+"",new Location(value,value),"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
 				.forEach(playgroundService::addNewElement);
 	}
 
 	// A
-	// @Test
-	public void testGetAllMessagesUsingPaginationWithDefaultSizeOfFirstPageSuccessfully() throws Exception {
+	@Test
+	public void testGetAllElementsUsingPaginationWithDefaultSizeOfFirstPageSuccessfully() throws Exception {
 
 		int DefaultSize = 10;
 		String baseUrl =  "http://localhost:" + port ;
@@ -100,7 +100,7 @@ public class WebUITests {
 		 * Given Server is up And the database contains 10 Elements
 		 */
 		
-		setElementsDatabase(DefaultSize);
+		setElementsDatabase(100);
 				
 
 		// when
@@ -112,7 +112,7 @@ public class WebUITests {
 	}
 
 	// A
-	// @Test
+	@Test
 	public void TestGetSomeElementsUsingPaginationSuccessfully() throws Exception {
 
 		int size = 3;
@@ -133,7 +133,7 @@ public class WebUITests {
 	}
 
 	// A
-	// @Test
+	@Test
 	public void TestGetNoElementsUsingPaginationOf100PageSuccessfully() throws Exception {
 
 		int size = 3;
@@ -155,7 +155,7 @@ public class WebUITests {
 	}
 
 	// A
-	// @Test
+	@Test
 	public void TestGetAllElementsUsingPaginationOfSecondPageSuccessfully() throws Exception {
 
 		int size = 6;
@@ -165,9 +165,9 @@ public class WebUITests {
 		String url = baseUrl +  "/playground/elements/2019a.talin/talin@email.com/all" + "?size=" + size + "&page=" + page;
 
 		/*
-		 * Given Server is up And the database contains 10 Elements
+		 * Given Server is up And the database contains 20 Elements
 		 */
-		setElementsDatabase(10);
+		setElementsDatabase(20);
 
 		// when
 		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
@@ -177,21 +177,31 @@ public class WebUITests {
 	}
 
 	// A
-	// @Test(expected=Exception.class)
+	@Test(expected=Exception.class)
 	public void testGetAllElementsWithIinvalidPageSize() {
 		// when
 
 		String baseUrl =  "http://localhost:" + port ;
 		String url = baseUrl + "/playground/elements/null/talin@email.com/all";
+			
+		/*
+		 * Given Server is up And the database contains 20 Elements
+		 */
+		setElementsDatabase(20);
 
+		
+		//When I Get  /playground/elements/null/talin@email.com/all?size=-6&page=1
 		this.restTemplate.getForObject(url + "?size={size}&page={page}", ElementTO[].class, -6, 1);
+		
+		
+		//Then the response status is <> 2xx 
 	}
 
 	// A
-	// @Test
+	@Test
 	public void TesTGetAllTheNearElementsUsingPaginationWithDefaultSizeOfFirstPageSuccessfully() throws Exception {
-		int x = 5;
-		int y = 5;
+		int x = 10;
+		int y = 10;
 		int distance = 10;
 		int DefaultSize = 10;
 
@@ -201,7 +211,7 @@ public class WebUITests {
 		/*
 		 * Given Server is up And the database contains 10 Elements
 		 */
-		setElementsDatabase(10);
+		setElementsDatabase(100);
 
 		// when
 		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
@@ -215,7 +225,7 @@ public class WebUITests {
 	}
 
 	// A
-	// @Test
+	@Test
 	public void TestGetSomeOfTheNearElementsUsingPaginationSuccessfully() throws Exception {
 		int x = 5;
 		int y = 5;
@@ -229,7 +239,7 @@ public class WebUITests {
 		/*
 		 * Given Server is up And the database contains 10 Elements
 		 */
-		setElementsDatabase(10);
+		setElementsDatabase(100);
 
 		// when
 		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
@@ -243,12 +253,12 @@ public class WebUITests {
 	}
 
 	// A
-	// @Test
+	@Test
 	public void TestGetAllNearElementsUsingPaginationOfSecondPageSuccessfully() throws Exception {
 		int x = 5;
 		int y = 5;
 		int distance = 10;
-		int size = 6;
+		int size = 5;
 		int page = 1;
 
 		String baseUrl =  "http://localhost:" + port ;
@@ -258,7 +268,7 @@ public class WebUITests {
 		/*
 		 * Given Server is up And the database contains 10 Elements
 		 */
-		setElementsDatabase(10);
+		setElementsDatabase(20);
 
 		// when
 		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
@@ -272,7 +282,7 @@ public class WebUITests {
 	}
 
 	// A
-	// @Test
+	@Test
 	public void TestGetNoNearElementsUsingPaginationOf100PageSuccessfully() throws Exception {
 		int x = 5;
 		int y = 5;
@@ -288,7 +298,7 @@ public class WebUITests {
 		 * Given Server is up And the database contains 10 Elements
 		 */
 		
-		setElementsDatabase(10);
+		setElementsDatabase(1);
 		
 		
 		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
@@ -299,7 +309,7 @@ public class WebUITests {
 
 	
 	//A
-	//@Test(expected = Exception.class)
+	@Test(expected = Exception.class)
 	public void TestGetAllTheNearElementsWithInvalidPageSize() throws Exception {
 		// when
 		int x = 5;
@@ -313,34 +323,43 @@ public class WebUITests {
 	}
 	
 	//A
-	//@Test
+	@Test
 	public void updateAnElementSuccessfully() throws Exception {
 		 //Given Server is up
-		String baseUrl =  "http://localhost:" + port ;
-		String url = baseUrl +"/playground/elements/2019a.talin/talin@email.com/2019a.talin/{ID}";
 		
 		String ID = "0";
-		Map<String,Object> attributesForEntityInDataBase = new HashMap<String, Object>();
+		String playground = "2019a.talin";
+		
+		
+		String baseUrl =  "http://localhost:" + port ;
+		String url = baseUrl +"/playground/elements/2019a.talin/talin@email.com/"+ playground +"/"+ID;
+		
+
+		
+		Map<String,Object> attributes = new HashMap<String, Object>();
+		attributes.put("Play", "Woof");
 		
 		ElementEntity elementEntity = new ElementEntity();
+		elementEntity.setCreationDate(null);
+			
 		
 		this.playgroundService.addNewElement(elementEntity);
 		
 		ElementTO updatedElementTO = new ElementTO();
 		updatedElementTO.setId(ID);
+		updatedElementTO.setPlayground(playground);
 		updatedElementTO.setLocation(new Location(10,10));
 		updatedElementTO.setName("Rex");
 		updatedElementTO.setType("Dog");
-		updatedElementTO.setAttributes(attributesForEntityInDataBase);
+		updatedElementTO.setAttributes(attributes);
 		updatedElementTO.setCreationDate(null);
 		
 		this.restTemplate.put(
-				url, 
-				updatedElementTO, 
-				ID);
+				url,
+				updatedElementTO);
 		
 		
-		ElementEntity actualElement = this.playgroundService.getElement("0", "2019a.talin");
+		ElementEntity actualElement = this.playgroundService.getElement(ID, playground);
 		
 		
 		ElementEntity expectedElement = new ElementEntity();
@@ -352,13 +371,14 @@ public class WebUITests {
 		expectedElement.setAttributes(attributesForexpectedElement);
 		expectedElement.setCreationDate(null);
 		
-
-		String actualElementJson = this.jackson.writeValueAsString(actualElement);
-		String expectedMessageJson = this.jackson.writeValueAsString(expectedElement);
-
 		
-		assertThat(actualElementJson)
-			.isEqualTo(expectedMessageJson);		
+		//String actualElementJson = this.jackson.writeValueAsString(actualElement);
+		//String expectedMessageJson = this.jackson.writeValueAsString(expectedElement);
+		
+		
+		assertThat(actualElement)
+			.isNotNull()
+			.isEqualTo(expectedElement);		
 		
 	}
 	
@@ -369,9 +389,12 @@ public class WebUITests {
 		String baseUrl =  "http://localhost:" + port ;
 		String url = baseUrl +"/playground/elements/2019a.talin/talin@email.com/2019a.talin/{ID}";
 		String ID = "0";
+		String playground = "2019a.talin";
+	
 		Map<String,Object> attributesForEntityInDataBase = new HashMap<String, Object>();
-		
 		//Given server is up 
+
+		//When I Put 
 		ElementTO updatedElementTO = new ElementTO();
 		updatedElementTO.setId(ID);
 		updatedElementTO.setLocation(new Location(10,10));

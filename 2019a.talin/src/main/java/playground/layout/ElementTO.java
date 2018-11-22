@@ -35,7 +35,7 @@ public class ElementTO {
 		this.type = "Animal";
 		this.attributes = new HashMap<>();
 		this.creatorPlayground = "2019a.talin";
-		this.creatorEmail = "2019a.Talin@Gmail.com";
+		this.creatorEmail = "2019a.Talin@Mail.com";
 	}
 	
 	private String getID()

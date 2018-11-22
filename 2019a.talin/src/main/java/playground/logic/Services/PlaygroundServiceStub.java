@@ -148,23 +148,23 @@ public class PlaygroundServiceStub implements PlaygroundService {
 		if (this.elementsDatabase.containsKey(playground + id)) {
 			ElementEntity elementEntity = this.elementsDatabase.get(playground + id);
 
-			if (!elementEntity.getLocation().equals(updatedElementEntity.getLocation())) {
+			if (elementEntity.getLocation() != null && !elementEntity.getLocation().equals(updatedElementEntity.getLocation())) {
 				elementEntity.setLocation(updatedElementEntity.getLocation());
 			}
 
-			if (!elementEntity.getName().equals(updatedElementEntity.getName())) {
+			if (elementEntity.getName() != null && !elementEntity.getName().equals(updatedElementEntity.getName())) {
 				elementEntity.setName(updatedElementEntity.getName());
 			}
 
-			if (!elementEntity.getExirationDate().equals(updatedElementEntity.getExirationDate())) {
+			if (elementEntity.getExirationDate() != null && !elementEntity.getExirationDate().equals(updatedElementEntity.getExirationDate())) {
 				elementEntity.setExirationDate(updatedElementEntity.getExirationDate());
 			}
 
-			if (!elementEntity.getType().equals(updatedElementEntity.getType())) {
+			if (elementEntity.getType() != null && !elementEntity.getType().equals(updatedElementEntity.getType())) {
 				elementEntity.setType(updatedElementEntity.getType());
 			}
 
-			if (!elementEntity.getAttributes().equals(updatedElementEntity.getAttributes())) {
+			if (elementEntity.getAttributes() != null && !elementEntity.getAttributes().equals(updatedElementEntity.getAttributes())) {
 				elementEntity.setAttributes(updatedElementEntity.getAttributes());
 			}
 
