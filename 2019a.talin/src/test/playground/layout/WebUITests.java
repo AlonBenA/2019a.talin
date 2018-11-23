@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import playground.logic.Location;
 import playground.logic.Entities.ElementEntity;
+import playground.logic.Entities.UserEntity;
 import playground.logic.Services.PlaygroundService;
 
 @RunWith(SpringRunner.class)
@@ -411,5 +412,68 @@ public class WebUITests {
 		// Then the response status <> 2xx 
 	}
 	
+	//I miss add new user to database !!!!!!!!!!!!!!!!!!!!!!!!!!
+		@Test
+		public void TestUpdateUserSuccessfully() throws Exception{
+				String email = "talin@email.com";
+				String playground ="2019a.Talin";
+				String username = "user2";
+				String avatar="https://goo.gl/images/WqDt96";
+				String role="Player";
+				long points = 0;
+				//Given server is up 
+				//And the database contains And the user database contains {"email": ”talin@email.com”,"playground": "2019a.Talin",
+				//														"username": "user2","avatar": "https://goo.gl/images/WqDt96",
+				//														"role": "Player","points": 0,"code":"1234"}
+				UserEntity userEnti = new UserEntity(email, playground, username, avatar, role, points);
+				//this.PlaygroundService.(
+				//		this.jackson.readValue("{\"message\":\"hello\", \"x\":1.0, \"y\":1.0}", MessageEntity.class));
+						
+		}
+		
+		//I
+		@Test
+		public void TestElementCreatedSuccessfully() throws Exception{
+			//Given Server is up
+			
+			String baseUrl =  "http://localhost:" + port ;
+			String url = baseUrl +"/playground/elements/{userPlayground}/{email}";
+			
+			String name = "cat";
+			double x = 1.0;
+			double y = 1.0;
+			String type = "animal";
+			
+			ElementTO newElement = new ElementTO();
+			newElement.setName(name);
+			newElement.setLocation(new Location(x, y));
+			newElement.setType(type);
+			
+			//Given server is up
+			
+			//When I POST  http://localhost:8083/playground/elements/2019a.talin/talin@email.com
+			//And with body 
+			//  {	
+			//“name”: “cat”,
+			//“type”:”animal”
+			//“location”:{“x”:0.0,”y”:0.0},
+			//
+			//}
+			//with headers:
+			// 	Accept: application/json
+			//	Content-Type:  application/json	
+			this.restTemplate.postForObject(
+					url, 
+					newElement, 
+					ElementTO.class);
+			//Then the response status is 2xx
+			// and the database contains for playground+id:“2019a.talin0”
+			
+			ElementEntity elementEntityExist = this.playgroundService.getElement("0", "2019a.talin");
+			assertThat(elementEntityExist)
+				.extracting("name", "x", "y","type")
+				.containsExactly(name, x, y, type);
 
+		}
+		
 }

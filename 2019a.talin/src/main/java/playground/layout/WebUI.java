@@ -225,9 +225,8 @@ public class WebUI {
 			@PathVariable("userPlayground") String userPlayground,
 			@PathVariable("email") String email, 
 			@RequestBody ElementTO elementTO) throws Exception {
-		validateNull(email);
-		validateNull(userPlayground);
-		return elementTO;
+		return new ElementTO(
+				this.playgroundService.addNewElement(elementTO.convertFromElementTOToElementEntity()));
 	}
 	
 	

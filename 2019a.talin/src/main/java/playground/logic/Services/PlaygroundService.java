@@ -8,7 +8,7 @@ import playground.logic.Exceptions.ElementNotFoundException;
 
 public interface PlaygroundService {
 	
-	public void addNewElement(ElementEntity elementEntity);
+	public ElementEntity addNewElement(ElementEntity elementEntity);
 	
 	//public void addNewUser(UserEntity userEntity);
 	
