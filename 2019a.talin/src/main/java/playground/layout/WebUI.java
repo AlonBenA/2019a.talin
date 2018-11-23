@@ -27,6 +27,7 @@ import playground.logic.Message;
 import playground.logic.NewUserForm;
 import playground.logic.Entities.ActivityEntity;
 import playground.logic.Entities.ElementEntity;
+import playground.logic.Entities.UserEntity;
 import playground.logic.Exceptions.ElementNotFoundException;
 import playground.logic.Exceptions.UserNotFoundException;
 import playground.logic.Services.PlaygroundService;
@@ -35,7 +36,9 @@ import playground.logic.Services.PlaygroundService;
 public class WebUI {
 	
 	private PlaygroundService playgroundService;
-	private String defaultUserName;
+	////////////////////////////////////////////////////////
+	private String defaultUserName; // remove/comment
+	///////////////////////////////////////////////////////
 	
 
 	public PlaygroundService getPlaygroundService() {
@@ -47,11 +50,12 @@ public class WebUI {
 		this.playgroundService = playgroundService;
 	}
 
-	
-	@Value("${name.of.user.to.be.greeted:Anonymous}")
-	public void setDefaultUserName(String defaultUserName) {
-		this.defaultUserName = defaultUserName;
-	}
+	////////////////////////////////////////////////////////
+	@Value("${name.of.user.to.be.greeted:Anonymous}")			// remove/comment
+	public void setDefaultUserName(String defaultUserName) {	// remove/comment
+		this.defaultUserName = defaultUserName;					// remove/comment
+	}															// remove/comment
+	///////////////////////////////////////////////////////
 	
 	private void validateNull(String name) throws Exception {
 		if ("null".equals(name) || name == null) {
@@ -156,9 +160,8 @@ public class WebUI {
 
 
 			//throw new RuntimeException("Error while retrieving data");
-
-		
-		
+			
+			
 	}
 	
 	
@@ -253,8 +256,12 @@ public class WebUI {
 			produces=MediaType.APPLICATION_JSON_VALUE,
 			consumes=MediaType.APPLICATION_JSON_VALUE)
 	public UserTo userSignup (@RequestBody NewUserForm newUserForm) {
-		UserTo user = new UserTo(newUserForm.getEmail(),"2019a.Talin",newUserForm.getUsername(),newUserForm.getAvatar(),newUserForm.getRole(),0);
-		return user;
+		UserEntity userEntity = playgroundService.addNewUser(
+				new UserEntity(newUserForm.getEmail(),newUserForm.getUsername(),
+						newUserForm.getAvatar(),newUserForm.getRole()));
+		
+		//userEntity.getCode(); // send code???????????????
+		return new UserTo(userEntity);
 	}
 	
 	// Rest api 2 - Sapir
@@ -262,21 +269,12 @@ public class WebUI {
 			method=RequestMethod.GET,
 			path="/playground/users/confirm/{playground}/{email}/{code}",
 			produces=MediaType.APPLICATION_JSON_VALUE)
-	public UserTo userValidate (@PathVariable("playground") String userPlayground,@PathVariable("email") String email, @PathVariable("code") int code) throws Exception {
-		
-		/*UserTo user = null;
-		List<UserTo> users = getListOfUserTO();
-		for (int i = 0; i < users.size(); i++) 
-			if(email.equals(users.get(i).getEmail()) && userPlayground.equals(users.get(i).getPlayground()))
-				user = users.get(i);
-		*/
-		validateNull(email);
-		validateNull(userPlayground);
-		
-		if (code >= 0)
-			return new UserTo(email, userPlayground, "username", "https://goo.gl/images/WqDt96", "manager", 0);
-		
-		throw new RuntimeException("Wrong code"); // user not found	
+	public UserTo userValidate (@PathVariable("playground") String userPlayground,@PathVariable("email") String email, @PathVariable("code") String code) throws Exception {
+		UserEntity userEntity = playgroundService.getUser(email, userPlayground);
+		boolean flag = userEntity.verify(code);
+		if(!flag)
+			throw new RuntimeException("Wrong code");
+		return new UserTo(userEntity);
 	}
 	
 	// Rest api 3 - Sapir
@@ -285,19 +283,11 @@ public class WebUI {
 			path="/playground/users/login/{playground}/{email}",
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public UserTo login (@PathVariable("playground") String userPlayground,@PathVariable("email") String email) throws Exception {
-		
-		/*List<UserTo> users = getListOfUserTO();
-		for (int i = 0; i < users.size(); i++) 
-			if(email.equals(users.get(i).getEmail()) && userPlayground.equals(users.get(i).getPlayground()))
-				return users.get(i);	
-		if("".equals(userPlayground))*/
-		
-		validateNull(email);
-		validateNull(userPlayground);
-		
-		return new UserTo(email, userPlayground, "username", "https://goo.gl/images/WqDt96", "Manager", 0);
-		
-		//throw new Exception(); // user not found
+		UserEntity userEntity = playgroundService.getUser(email, userPlayground);
+		boolean flag = userEntity.isVerified();
+		if(!flag)
+			throw new RuntimeException("User not verified");
+		return new UserTo(userEntity);
 	}
 	
 	@ExceptionHandler//(UserNotFoundException.class)

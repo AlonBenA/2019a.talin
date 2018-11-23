@@ -4,17 +4,19 @@ import java.util.List;
 
 import playground.logic.Entities.ActivityEntity;
 import playground.logic.Entities.ElementEntity;
+import playground.logic.Entities.UserEntity;
 import playground.logic.Exceptions.ElementNotFoundException;
+import playground.logic.Exceptions.UserNotFoundException;
 
 public interface PlaygroundService {
 	
 	public ElementEntity addNewElement(ElementEntity elementEntity);
 	
-	//public void addNewUser(UserEntity userEntity);
+	public UserEntity addNewUser(UserEntity userEntity);
 	
 	public void addNewActivity(ActivityEntity activityEntity);
 
-	//public UserEntity getUser(String user_id) throws UserNotFoundException;
+	public UserEntity getUser(String email, String playground) throws UserNotFoundException;
 	
 	public ElementEntity getElement(String element_id,String element_Playground) throws ElementNotFoundException;
 	

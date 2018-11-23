@@ -1,5 +1,7 @@
 package playground.logic.Entities;
 
+import java.util.Random;
+
 public class UserEntity {
 	private String email;
 	private String playground;
@@ -8,26 +10,25 @@ public class UserEntity {
 	private String role;
 	private long points;
 	private StringBuilder code;
-	
-	
+
 	public UserEntity() {
 		super();
 	}
-
-	public UserEntity(String email, String playground, String username, String avatar, String role, long points) {
+	
+	public UserEntity(String email, String username, String avatar, String role) {
 		super();
 		setEmail(email);
-		setPlayground(playground);
+		this.playground = "2019a.Talin";
 		setUsername(username);
 		setAvatar(avatar);
 		setRole(role);
-		setPoints(points);
-		this.code.append(1234);
-		/*Random r = new Random();
+		this.points = 0;
+//		this.code.append(1234);
+		Random r = new Random();
 		int low = 1000;
 		int high = 9999;
 		int result = r.nextInt(high-low) + low;
-		this.code.append(result);*/
+		code = new StringBuilder(result);
 		
 	}
 
@@ -82,23 +83,26 @@ public class UserEntity {
 	public String getCode() {
 		return code.toString();
 	}
-
-	public void setCode(String code) {	
+	
+	public void setCode(String code) {
+		this.code.delete(0, this.code.length());
+		this.code.append(code);
 	}
 	
 	public boolean verify(String code) {
 		if(code.equals(this.code.toString())) {
-			this.code.delete(0, this.code.length());
+			this.code = null;
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean isVerified() {
-		if("".equals(code.toString()))
+		if(code == null)
 			return true;
 		return false;
 	}
 	
 	
+
 }

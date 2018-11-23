@@ -13,21 +13,22 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
 
-import playground.layout.ElementTO;
 import playground.logic.Location;
 import playground.logic.Entities.ActivityEntity;
 import playground.logic.Entities.ElementEntity;
+import playground.logic.Entities.UserEntity;
 import playground.logic.Exceptions.ElementNotFoundException;
+import playground.logic.Exceptions.UserNotFoundException;
 
 @Service
 public class PlaygroundServiceStub implements PlaygroundService {
-	// private Map<String, UserEntity> usersDatabase;
+	private Map<String, UserEntity> usersDatabase;
 	private Map<String, ElementEntity> elementsDatabase;
 	private Map<String, ActivityEntity> activitiesDatabase;
 
 	@PostConstruct
 	public void init() {
-		// this.usersDatabase = new HashMap<>();
+		this.usersDatabase = new HashMap<>();
 		this.elementsDatabase = new HashMap<>();
 		this.activitiesDatabase = new HashMap<>();
 	}
@@ -81,13 +82,6 @@ public class PlaygroundServiceStub implements PlaygroundService {
 			throw new RuntimeException("could not find activity by id: " + activity_id);
 		}
 		return rv;
-	}
-
-	@Override
-	public void cleanup() {
-		this.elementsDatabase.clear();
-		this.activitiesDatabase.clear();
-		// this.usersDatabase.clear();
 	}
 
 	@Override
@@ -175,6 +169,27 @@ public class PlaygroundServiceStub implements PlaygroundService {
 			throw new ElementNotFoundException("Did not found the element");
 		}
 
+	}
+
+	@Override
+	public UserEntity addNewUser(UserEntity userEntity) {
+		return this.usersDatabase.put(userEntity.getEmail()+userEntity.getPlayground(), userEntity);
+	}
+
+	@Override
+	public UserEntity getUser(String email, String playground) throws UserNotFoundException {
+		UserEntity userEntity = this.usersDatabase.get(email + playground);
+		if (userEntity == null) {
+			throw new RuntimeException("could not find user by id: " + email+playground);
+		}
+		return userEntity;
+	}
+	
+	@Override
+	public void cleanup() {
+		this.elementsDatabase.clear();
+		this.activitiesDatabase.clear();
+		this.usersDatabase.clear();
 	}
 
 }

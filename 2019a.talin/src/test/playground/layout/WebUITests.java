@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import playground.logic.Location;
 import playground.logic.Entities.ElementEntity;
 import playground.logic.Entities.UserEntity;
+import playground.logic.Exceptions.UserNotFoundException;
 import playground.logic.Services.PlaygroundService;
 
 @RunWith(SpringRunner.class)
@@ -40,7 +41,7 @@ public class WebUITests {
 	@LocalServerPort
 	private int port;
 
-	private String Url;
+	private String base_url;
 	
 	
 	private ObjectMapper jackson;
@@ -48,9 +49,9 @@ public class WebUITests {
 	@PostConstruct
 	public void init() {
 		this.restTemplate = new RestTemplate();
-
-		Url = "http://localhost:" + port;
-		System.err.println(this.Url);
+			
+		base_url = "http://localhost:" + port;
+		System.err.println(this.base_url);
 	}
 
 	@Before
@@ -64,6 +65,50 @@ public class WebUITests {
 		// this.messageService.cleanup();
 		this.playgroundService.cleanup();
 		
+	}
+	
+	// S
+	@Test
+	public void testUserSignupSuccessfully() throws Exception {
+		String url = base_url + "/playground/users";
+		String email = "usermail2@usermail.com";
+		String username = "user2";
+		String avatar = "https://goo.gl/images/WqDt96";
+		String role = "Player";
+//		 Given Server is up
+		
+//		 When I POST http://localhost:8083/playground/users with 
+//		 {
+//		 "email": "usermail2@usermail.com",
+//		 "username":"user2",
+//		 "avatar":"https://goo.gl/images/WqDt96",
+//		 "role":"Player"
+//		 }
+		
+		//UserTO userEntity = this.playgroundService.addNewUser(new UserEntity(email,username, avatar, role));
+		UserTo userTo = new UserTo(email, username, avatar, role);
+		this.restTemplate.postForObject(url, userTo, UserTo.class);
+		
+		//playgroundService.addNewUser(new UserEntity("usermail2@usermail.com"));
+//
+//		  with headers:
+//		  Accept: application/json
+//		 Content-Type:  application/json	
+//		 	Then the response status is 2xx and body is 
+//		 {
+//		 	"email": "usermail2@usermail.com",
+//		     		"playground": "2019a.Talin",
+//		   		"username": "user2",
+//		    		"avatar": "https://goo.gl/images/WqDt96",
+//		     		"role": "Player",
+//		    	 	"points": any positive integer
+//		 }
+		
+		UserEntity actualValue = this.playgroundService.getUser(email, "2019a.Talin");
+		assertThat(actualValue)
+//			.isNotNull()
+			.extracting("email", "username", "avatar", "role")
+			.containsExactly(email,username, avatar, role);
 	}
 	
 	
@@ -427,7 +472,7 @@ public class WebUITests {
 				//And the database contains And the user database contains {"email": ”talin@email.com”,"playground": "2019a.Talin",
 				//														"username": "user2","avatar": "https://goo.gl/images/WqDt96",
 				//														"role": "Player","points": 0,"code":"1234"}
-				UserEntity userEnti = new UserEntity(email, playground, username, avatar, role, points);
+				UserEntity userEnti = new UserEntity(email, username, avatar, role);
 				//this.PlaygroundService.(
 				//		this.jackson.readValue("{\"message\":\"hello\", \"x\":1.0, \"y\":1.0}", MessageEntity.class));
 						

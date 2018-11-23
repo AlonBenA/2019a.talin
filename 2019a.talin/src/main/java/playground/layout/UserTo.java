@@ -14,14 +14,14 @@ public class UserTo {
 		super();
 	}
 	
-	public UserTo(String email, String playground, String username, String avatar, String role, long points) {
+	public UserTo(String email, String username, String avatar, String role) {
 		super();
 		setEmail(email);
-		setPlayground(playground);
+		this.playground = "2019a.Talin";
 		setUsername(username);
 		setAvatar(avatar);
 		setRole(role);
-		setPoints(points);
+		this.points = 0;
 	}
 	
 	public UserTo(UserEntity userEntity) {
