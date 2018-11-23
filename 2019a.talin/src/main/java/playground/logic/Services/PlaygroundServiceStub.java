@@ -47,7 +47,7 @@ public class PlaygroundServiceStub implements PlaygroundService {
 
 		// location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
 		this.elementsDatabase = IntStream.range(0, 100) // int stream
-				.mapToObj(value -> new ElementEntity(value + "", new Location(value, value), "animal #" + value,
+				.mapToObj(value -> new ElementEntity(new Location(value, value), "animal #" + value,
 						exirationDate, type, attributes, creatorPlayground, creatorEmail)) // ElementTO stream using
 																							// constructor reference
 				.collect(Collectors.toMap(ElementEntity::getId, Function.identity()));

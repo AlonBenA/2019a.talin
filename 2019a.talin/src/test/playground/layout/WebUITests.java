@@ -85,7 +85,7 @@ public class WebUITests {
 				
 		//location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
 		IntStream.range(0, numberOFElements) // int stream
-				.mapToObj(value -> new ElementEntity(value+"",new Location(value,value),"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
+				.mapToObj(value -> new ElementEntity(new Location(value,value),"animal #" + value,exirationDate,type,attributes,creatorPlayground,creatorEmail)) //  ElementTO stream using constructor reference
 				.forEach(playgroundService::addNewElement);
 	}
 
@@ -328,12 +328,12 @@ public class WebUITests {
 	public void updateAnElementSuccessfully() throws Exception {
 		 //Given Server is up
 		
-		String ID = "0";
+		String updateAnElementID = "updateAnElementID";
 		String playground = "2019a.talin";
 		
 		
 		String baseUrl =  "http://localhost:" + port ;
-		String url = baseUrl +"/playground/elements/2019a.talin/talin@email.com/"+ playground +"/"+ID;
+		String url = baseUrl +"/playground/elements/2019a.talin/talin@email.com/"+ playground +"/"+updateAnElementID;
 		
 
 		
@@ -341,13 +341,14 @@ public class WebUITests {
 		attributes.put("Play", "Woof");
 		
 		ElementEntity elementEntity = new ElementEntity();
+		elementEntity.setId(updateAnElementID);
 		elementEntity.setCreationDate(null);
 			
 		
 		this.playgroundService.addNewElement(elementEntity);
 		
 		ElementTO updatedElementTO = new ElementTO();
-		updatedElementTO.setId(ID);
+		updatedElementTO.setId(updateAnElementID);
 		updatedElementTO.setPlayground(playground);
 		updatedElementTO.setLocation(new Location(10,10));
 		updatedElementTO.setName("Rex");
@@ -360,10 +361,11 @@ public class WebUITests {
 				updatedElementTO);
 		
 		
-		ElementEntity actualElement = this.playgroundService.getElement(ID, playground);
+		ElementEntity actualElement = this.playgroundService.getElement(updateAnElementID, playground);
 		
 		
 		ElementEntity expectedElement = new ElementEntity();
+		expectedElement.setId(updateAnElementID);
 		expectedElement.setLocation(new Location(10,10));
 		expectedElement.setName("Rex");
 		expectedElement.setType("Dog");
@@ -439,12 +441,17 @@ public class WebUITests {
 			String baseUrl =  "http://localhost:" + port ;
 			String url = baseUrl +"/playground/elements/{userPlayground}/{email}";
 			
+			
+			String playground = "2019a.talin";
+			String Id = "123";
+			String Email = "tali@mali.com";
 			String name = "cat";
 			double x = 1.0;
 			double y = 1.0;
 			String type = "animal";
 			
 			ElementTO newElement = new ElementTO();
+			newElement.setId(Id);
 			newElement.setName(name);
 			newElement.setLocation(new Location(x, y));
 			newElement.setType(type);
@@ -465,11 +472,12 @@ public class WebUITests {
 			this.restTemplate.postForObject(
 					url, 
 					newElement, 
-					ElementTO.class);
+					ElementTO.class,playground,Email);
 			//Then the response status is 2xx
 			// and the database contains for playground+id:“2019a.talin0”
 			
-			ElementEntity elementEntityExist = this.playgroundService.getElement("0", "2019a.talin");
+			System.out.println("\n\n\n\n"+newElement.getId());
+			ElementEntity elementEntityExist = this.playgroundService.getElement(Id, playground);
 			assertThat(elementEntityExist)
 				.extracting("name", "x", "y","type")
 				.containsExactly(name, x, y, type);

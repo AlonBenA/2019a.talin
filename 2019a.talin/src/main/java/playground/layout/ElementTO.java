@@ -11,7 +11,6 @@ import playground.logic.Entities.ElementEntity;
 public class ElementTO {
 
 	
-	private static AtomicLong IDGiver = new AtomicLong(0);
 	private String playground; 
 	private String id;
 	private Location location;
@@ -27,7 +26,7 @@ public class ElementTO {
 	public ElementTO() {
 		super();
 		this.playground = "2019a.talin";
-		this.id = getID();
+		this.id = "0";
 		this.location = new Location(0, 0);
 		this.name = "Animal";
 		this.creationDate = new Date();
@@ -37,17 +36,13 @@ public class ElementTO {
 		this.creatorPlayground = "2019a.talin";
 		this.creatorEmail = "2019a.Talin@Mail.com";
 	}
-	
-	private String getID()
-	{
-		return IDGiver.incrementAndGet()+"";
-	}
+
 	
 	public ElementTO(Location location,String name,Date exirationDate,String type
 			,Map<String,Object> attributes,String creatorPlayground, String creatorEmail)
 	{
 		this.playground = "2019a.talin";
-		this.id = getID();
+		this.id = "0";
 		setLocation(location);
 		setName(name);
 		this.creationDate = new Date();
@@ -137,13 +132,14 @@ public class ElementTO {
 	
 	public ElementEntity convertFromElementTOToElementEntity()
 	{
+
 		ElementEntity elementEntity = new ElementEntity();
+		elementEntity.setId(id);
 		elementEntity.setAttributes(attributes);
 		elementEntity.setCreationDate(creationDate);
 		elementEntity.setCreatorEmail(creatorEmail);
 		elementEntity.setCreatorPlayground(creatorPlayground);
 		elementEntity.setExirationDate(exirationDate);
-		elementEntity.setId(id);
 		elementEntity.setLocation(location);
 		elementEntity.setName(name);
 		elementEntity.setPlayground(creatorPlayground);
