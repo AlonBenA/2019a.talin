@@ -102,7 +102,70 @@ public class UserEntity {
 			return true;
 		return false;
 	}
+/*
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((playground == null) ? 0 : playground.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((avatar == null) ? 0 : avatar.hashCode());
+		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		return result;
+	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserEntity other = (UserEntity) obj;
+				
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		
+		if (playground == null) {
+			if (other.playground != null)
+				return false;
+		} else if (!playground.equals(other.playground))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+				
+		if (avatar == null) {
+			if (other.avatar != null)
+				return false;
+		} else if (!avatar.equals(other.avatar))
+			return false;
+		
+		if (role == null) {
+			if (other.role != null)
+				return false;
+		} else if (!role.equals(other.role))
+			return false;
+			
+		if (!(points == other.points))
+			return false;
+				
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		
+		return true;
+	}
 	
-
+*/
 }

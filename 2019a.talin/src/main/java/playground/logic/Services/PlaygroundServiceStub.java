@@ -185,6 +185,37 @@ public class PlaygroundServiceStub implements PlaygroundService {
 		return userEntity;
 	}
 	
+	
+
+	@Override
+	public synchronized void updateUser(UserEntity updatedUserEntity,String email,String playground) throws Exception {
+
+		if (this.usersDatabase.containsKey(email + playground)) {
+			UserEntity userEntity = this.usersDatabase.get(email + playground);
+
+			if (updatedUserEntity.getUsername() != "" && userEntity.getUsername() != null && !userEntity.getUsername().equals(updatedUserEntity.getUsername())) {
+				userEntity.setUsername(updatedUserEntity.getUsername());
+			}
+
+			if (updatedUserEntity.getAvatar() != "" && userEntity.getAvatar() != null && !userEntity.getAvatar().equals(updatedUserEntity.getAvatar())) {
+				userEntity.setAvatar(updatedUserEntity.getAvatar());
+			}
+			
+			if (updatedUserEntity.getRole() != "" && userEntity.getRole() != null && !userEntity.getRole().equals(updatedUserEntity.getRole())) {
+				userEntity.setRole(updatedUserEntity.getRole());
+			}
+			
+					
+			
+			this.usersDatabase.put(email + playground, userEntity);
+
+		} else {
+			throw new ElementNotFoundException("Did not found the element");
+		}
+
+	}
+	
+	
 	@Override
 	public void cleanup() {
 		this.elementsDatabase.clear();

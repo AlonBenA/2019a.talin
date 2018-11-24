@@ -214,8 +214,10 @@ public class WebUI {
 			@PathVariable("playground") String playground,
 			@PathVariable("email") String email,
 			@RequestBody UserTo newUser) throws Exception {
-		validateNull(email);
-		validateNull(playground);
+
+		
+		playgroundService.updateUser(newUser.convertFromUserTOToUserEntity(), email, playground);
+
 	}
 	
 	//Sprint2: Write the POST /playground/elements/{userPlayground }/{email}
@@ -242,11 +244,8 @@ public class WebUI {
 			@PathVariable("userPlayground") String userPlayground,
 			@PathVariable("email") String email,
 			@PathVariable("playground") String playground,
-			@PathVariable("id") String id) {
-		
-		List<ElementTO> elements = getListOfElementsTO();
-		
-		return elements.get(0);		
+			@PathVariable("id") String id) throws ElementNotFoundException {
+		return new ElementTO(this.playgroundService.getElement(id, playground));	
 	}
 	
 	// Rest api 1 - Sapir 

@@ -32,4 +32,5 @@ public interface PlaygroundService {
 	
 	public void updateElement(ElementEntity updatedElementEntity,String playground,String id) throws Exception;
 	
+	public void updateUser(UserEntity updatedUserEntity,String email,String playground) throws Exception;
 }
