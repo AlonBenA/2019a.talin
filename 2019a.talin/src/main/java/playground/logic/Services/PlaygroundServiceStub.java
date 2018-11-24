@@ -187,15 +187,20 @@ public class PlaygroundServiceStub implements PlaygroundService {
 
 	@Override
 	public synchronized UserEntity addNewUser(UserEntity userEntity) {
-		this.usersDatabase.put(userEntity.getPlayground() + userEntity.getEmail(), userEntity);
-		return this.usersDatabase.get(userEntity.getPlayground()+ userEntity.getEmail());
+		String key = userEntity.getPlayground() + userEntity.getEmail();
+		if (this.usersDatabase.containsKey(key)) {
+			throw new RuntimeException("a user already exists for: " + key);
+		}
+		this.usersDatabase.put(key, userEntity);
+		return this.usersDatabase.get(key);
 	}
 
 	@Override
 	public synchronized UserEntity getUser(String email, String playground) throws UserNotFoundException {
-		UserEntity userEntity = this.usersDatabase.get(playground + email);
+		String key = playground + email;
+		UserEntity userEntity = this.usersDatabase.get(key);
 		if (userEntity == null) {
-			throw new RuntimeException("could not find user by id: " + email+playground);
+			throw new RuntimeException("could not find user by id: " + key);
 		}
 		return userEntity;
 	}

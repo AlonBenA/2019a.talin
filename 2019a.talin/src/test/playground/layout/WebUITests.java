@@ -71,6 +71,8 @@ public class WebUITests {
 
 	}
 
+	// SAP
+/////////////////////////////////////////////////////////////////////////////////
 	// S
 	@Test
 	public void testUserSignupSuccessfully() throws Exception {
@@ -79,42 +81,133 @@ public class WebUITests {
 		String username = "user2";
 		String avatar = "https://goo.gl/images/WqDt96";
 		String role = "Player";
-//		 Given Server is up
+		String playground = "2019a.Talin";
+		
+//		Given Server is up
 
-//		 When I POST http://localhost:8083/playground/users with 
-//		 {
-//		 "email": "usermail2@usermail.com",
-//		 "username":"user2",
-//		 "avatar":"https://goo.gl/images/WqDt96",
-//		 "role":"Player"
-//		 }
+//		When I POST http://localhost:8083/playground/users with 
+//		{"email":"usermail2@usermail.com", "username":"user2", 
+//				"avatar":"https://goo.gl/images/WqDt96", "role":"Player"}
 
-		// UserTO userEntity = this.playgroundService.addNewUser(new
-		// UserEntity(email,username, avatar, role));
-//		this.playgroundService.cleanup();
-		NewUserForm newUserForm = new NewUserForm(email, username, avatar, role);
+		NewUserForm newUserForm = this.jackson.readValue("{"
+				+ "\"email\":\"usermail2@usermail.com\",\"username\":\"user2\","
+				+ "\"avatar\":\"https://goo.gl/images/WqDt96\",\"role\":\"Player\""
+				+ "}", NewUserForm.class);
+//		NewUserForm newUserForm = new NewUserForm(email, username, avatar, role);
 		this.restTemplate.postForObject(url, newUserForm, NewUserForm.class);
 
-		// playgroundService.addNewUser(new UserEntity("usermail2@usermail.com"));
-//
 //		  with headers:
 //		  Accept: application/json
 //		 Content-Type:  application/json	
 //		 	Then the response status is 2xx and body is 
-//		 {
-//		 	"email": "usermail2@usermail.com",
-//		     		"playground": "2019a.Talin",
-//		   		"username": "user2",
-//		    		"avatar": "https://goo.gl/images/WqDt96",
-//		     		"role": "Player",
-//		    	 	"points": any positive integer
-//		 }
+//		 {"email": "usermail2@usermail.com", "playground": "2019a.Talin", 
+//				"username": "user2", "avatar": "https://goo.gl/images/WqDt96", 
+//						"role": "Player", "points": any positive integer}
 
-		UserEntity actualValue = this.playgroundService.getUser(email, "2019a.Talin");
+		UserEntity actualValue = this.playgroundService.getUser(email, playground);
 		assertThat(actualValue)
-//			.isNotNull()
-				.extracting("email", "username", "avatar", "role").containsExactly(email, username, avatar, role);
+				.extracting("email", "playground", "username", "avatar", "role")
+				.containsExactly(email, playground, username, avatar, role);
 	}
+	
+	
+	@Test(expected=Exception.class)
+	public void testUserSignupWithDuplicateKey() throws Exception {
+		String url = base_url + "/playground/users";
+		String email = "usermail2@usermail.com";
+		String username = "user2";
+		String avatar = "https://goo.gl/images/WqDt96";
+		String role = "Player";
+		
+//		 Given Server is up
+//		And the database contains
+//		[{"email": "usermail2@usermail.com", "playground": "2019a.Talin",
+//				"username": "user2", "avatar": "https://goo.gl/images/WqDt96",
+//						"role": "Player", "points": 0, "code":"X"}]
+		
+		this.playgroundService.addNewUser(new UserEntity(email, username, avatar, role));
+		
+//		When I POST http://localhost:8083/playground/users with 
+//		{"email":"usermail2@usermail.com", "username":"user2", 
+//				"avatar":"https://goo.gl/images/WqDt96", "role":"Player"}
+//		with headers:
+//			Accept: application/json
+//			Content-Type:  application/json
+
+		NewUserForm newUserForm = this.jackson.readValue("{"
+				+ "\"email\":\"usermail2@usermail.com\",\"username\":\"user2\","
+				+ "\"avatar\":\"https://goo.gl/images/WqDt96\",\"role\":\"Player\""
+				+ "}", NewUserForm.class);
+//		NewUserForm newUserForm = new NewUserForm(email, username, avatar, role);
+		try {
+			this.restTemplate.postForObject(url, newUserForm, NewUserForm.class);
+			
+//		Then the response status is <> 2xx
+		}catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		}	
+	}
+	
+	@Test
+	public void testValidateSuccessfully() throws Exception {
+		String url = base_url + "/playground/users/confirm/{playground}/{email}/{code}";
+		String email = "usermail1@usermail.com";
+		String username = "user1";
+		String avatar = "https://goo.gl/images/WqDt96";
+		String role = "Manager";
+		String playground = "2019a.Talin";
+		String code = 1234+"";
+//		Given Server is up
+//		And the database contains 
+//		[{"email": "usermail1@usermail.com", "playground": "2019a.Talin",
+//				"username": "user1", "avatar": "https://goo.gl/images/WqDt96", 
+//						"role": "Manager", "points": 0,	"code":"X"}]
+		
+		this.playgroundService.addNewUser(new UserEntity(email, username, avatar, role));
+		this.playgroundService.getUser(email, playground).setCode(code);
+		
+//		When I GET http://localhost:8083/playground/users/confirm/2019a.Talin/usermail1@usermail.com/X
+//		with headers:
+//		 Accept: application/json
+		
+		UserTO actualUser = this.restTemplate.getForObject(url, UserTO.class, playground, email, code);
+
+//		Then the response status is 2xx and body is 
+//		{
+//				"email": "usermail1@usermail.com"
+//		    	"playground": "2019a.Talin",
+//		  		"username": any valid user name,
+//		   		"avatar": any valid url,
+//		    	"role": Manager/Player,
+//		   	 	"points": any positive integer
+//		}
+		
+		assertThat(actualUser)
+				.extracting("email", "playground", "username", "avatar", "role")
+				.containsExactly(email, playground, username, avatar, role);
+		
+		// And the database contains for 
+//		email: "usermail1@usermail.com" and playground: 2019a.Talin
+//		the object 
+//		{"email": "usermail1@usermail.com", "playground": "2019a.Talin",
+//				"username": "user1", "avatar": "https://goo.gl/images/WqDt96",
+//						"role": "Manager", "points": 0, "code":null}
+
+		UserEntity actualValue = this.playgroundService.getUser(actualUser.getEmail(), actualUser.getPlayground());
+		assertThat(actualValue)
+			.extracting("email", "playground", "username", "avatar", "role")
+			.containsExactly(email, playground, username, avatar, role);
+		assertThat(actualValue)
+			.extracting("code")
+			.isNull();
+	}
+
+	
+	
+///////////////////////////////////////////////////////////////////////////////
+	
+	
 
 	private void setElementsDatabase(int numberOFElements) {
 
