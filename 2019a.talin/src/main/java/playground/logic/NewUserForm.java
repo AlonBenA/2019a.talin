@@ -7,7 +7,7 @@ public class NewUserForm {
 	private String role;
 	
 	public NewUserForm() {
-		super();
+		this("","","","");
 	}
 
 	public NewUserForm(String email, String username, String avatar, String role) {

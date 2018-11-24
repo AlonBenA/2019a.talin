@@ -59,7 +59,9 @@ public class PlaygroundServiceStub implements PlaygroundService {
 		this.elementsDatabase.put(elementEntity.getPlayground() + elementEntity.getId(), elementEntity);
 		return elementEntity;
 	}
-
+	
+	
+	////////////////////void???????????????
 	@Override
 	public void addNewActivity(ActivityEntity activityEntity) {
 		this.activitiesDatabase.put(activityEntity.getId(), activityEntity);
@@ -172,13 +174,14 @@ public class PlaygroundServiceStub implements PlaygroundService {
 	}
 
 	@Override
-	public UserEntity addNewUser(UserEntity userEntity) {
-		return this.usersDatabase.put(userEntity.getEmail()+userEntity.getPlayground(), userEntity);
+	public synchronized UserEntity addNewUser(UserEntity userEntity) {
+		this.usersDatabase.put(userEntity.getPlayground() + userEntity.getEmail(), userEntity);
+		return this.usersDatabase.get(userEntity.getPlayground()+ userEntity.getEmail());
 	}
 
 	@Override
-	public UserEntity getUser(String email, String playground) throws UserNotFoundException {
-		UserEntity userEntity = this.usersDatabase.get(email + playground);
+	public synchronized UserEntity getUser(String email, String playground) throws UserNotFoundException {
+		UserEntity userEntity = this.usersDatabase.get(playground + email);
 		if (userEntity == null) {
 			throw new RuntimeException("could not find user by id: " + email+playground);
 		}

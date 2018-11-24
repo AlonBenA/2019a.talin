@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import playground.logic.Location;
+import playground.logic.NewUserForm;
 import playground.logic.Entities.ElementEntity;
 import playground.logic.Entities.UserEntity;
 import playground.logic.Exceptions.UserNotFoundException;
@@ -48,7 +49,7 @@ public class WebUITests {
 	@PostConstruct
 	public void init() {
 		this.restTemplate = new RestTemplate();
-
+		this.jackson = new ObjectMapper();
 		base_url = "http://localhost:" + port;
 		System.err.println(this.base_url);
 	}
@@ -86,8 +87,9 @@ public class WebUITests {
 
 		// UserTO userEntity = this.playgroundService.addNewUser(new
 		// UserEntity(email,username, avatar, role));
-		UserTo userTo = new UserTo(email, username, avatar, role);
-		this.restTemplate.postForObject(url, userTo, UserTo.class);
+//		this.playgroundService.cleanup();
+		NewUserForm newUserForm = new NewUserForm(email, username, avatar, role);
+		this.restTemplate.postForObject(url, newUserForm, NewUserForm.class);
 
 		// playgroundService.addNewUser(new UserEntity("usermail2@usermail.com"));
 //
@@ -469,7 +471,7 @@ public class WebUITests {
 		// with headers:
 		// Accept: application/json
 		// Content-Type: application/json
-		UserTo updateUser = new UserTo();
+		UserTO updateUser = new UserTO();
 		updateUser.setAvatar(newAvatar);
 
 		this.restTemplate.put(url, updateUser, playground, email);
@@ -508,7 +510,7 @@ public class WebUITests {
 		// Accept: application/json
 		// Content-Type: application/json
 
-		UserTo updateUser = new UserTo();
+		UserTO updateUser = new UserTO();
 		updateUser.setAvatar(newAvatar);
 
 		this.restTemplate.put(url, updateUser, playground, email);

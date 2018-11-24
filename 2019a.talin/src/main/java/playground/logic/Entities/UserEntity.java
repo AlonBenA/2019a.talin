@@ -12,7 +12,7 @@ public class UserEntity {
 	private StringBuilder code;
 
 	public UserEntity() {
-		super();
+		this("","","","");
 	}
 	
 	public UserEntity(String email, String username, String avatar, String role) {
