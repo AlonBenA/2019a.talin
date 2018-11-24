@@ -14,13 +14,13 @@ public interface PlaygroundService {
 	
 	public UserEntity addNewUser(UserEntity userEntity);
 	
-	public void addNewActivity(ActivityEntity activityEntity);
+	public ActivityEntity addNewActivity(ActivityEntity activityEntity);
 
 	public UserEntity getUser(String email, String playground) throws UserNotFoundException;
 	
 	public ElementEntity getElement(String element_id,String element_Playground) throws ElementNotFoundException;
 	
-	public ActivityEntity getActivity(String activity_id) throws Exception;
+	public ActivityEntity getActivity(String activity_id, String playground) throws Exception;
 	
 	public void cleanup();
 
@@ -33,4 +33,6 @@ public interface PlaygroundService {
 	public void updateElement(ElementEntity updatedElementEntity,String playground,String id) throws Exception;
 	
 	public void updateUser(UserEntity updatedUserEntity,String email,String playground) throws Exception;
+	
+	public boolean validateElementAttribteName(String name);
 }

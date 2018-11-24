@@ -1,13 +1,12 @@
 package playground.layout;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,19 +77,22 @@ public class WebUI {
 		validateNull(email);
 		validateNull(userPlayground);
 		
-		List<ElementTO> allElements = 
-				playgroundService.getAllElements(size, page) // list of entities
-				.stream() // stream of entities
-				.map(ElementTO::new) // stream of boundaries
-				.collect(Collectors.toList());// list of boundaries
+		// validate attribute
+		boolean attributeNameResult =  playgroundService.validateElementAttribteName(attributeName);
+		
+		if(attributeNameResult) {
+			List<ElementTO> elementsWithAttribute = 
+					playgroundService.getAllElements(size, page) // list of entities
+					.stream() // stream of entities
+					.filter(element -> (attributeName.equals("name") ? element.getName().equals(value)
+							: element.getType().equals(value)))
+					.map(ElementTO::new) // stream of boundaries
+					.collect(Collectors.toList());// list of boundaries
 				
-		List<ElementTO> elementsWithAttribute = new ArrayList<>();
-		for(ElementTO element: allElements)
-			if(element.getAttributes().containsKey(attributeName))
-				if(element.getAttributes().get(attributeName).equals(value))
-					elementsWithAttribute.add(element);	
-			
-		return elementsWithAttribute.toArray(new ElementTO[0]);
+			return elementsWithAttribute.toArray(new ElementTO[0]);
+		}
+		
+		else throw new RuntimeException("Invalid Attribute for searching elements");
 	}
 	
 	//Sprint2: Write the /playground/activities/{userPlayground}/{email} 
@@ -109,8 +111,14 @@ public class WebUI {
 		
 		boolean activityResult =  playgroundService.validateActivityType(activityTo.getType());
 		
-		if(activityResult)
-			return new Message(activityTo.getType() + ": with" + activityTo.getElementId() + " element");
+		if(activityResult) {
+			//update attributes that come from url
+			activityTo.setPlayerEmail(email);
+			activityTo.setPlayerPlayground(userPlayground);
+			ActivityEntity activityEntity = activityTo.convertFromActivityTOToActivityEntity();
+			ActivityEntity ac= playgroundService.addNewActivity(activityEntity);
+			return ac;
+		}
 		
 		else throw new RuntimeException("Invalid Activity Type");
 	}

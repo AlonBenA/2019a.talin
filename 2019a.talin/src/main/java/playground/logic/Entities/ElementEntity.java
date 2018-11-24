@@ -54,7 +54,12 @@ public class ElementEntity {
 	
 	private String getID()
 	{
-		return IDGiver.incrementAndGet()+"";
+		return IDGiver.getAndIncrement()+"";
+	}
+	
+	public static void resetID()
+	{
+		IDGiver = new AtomicLong(0);
 	}
 	
 	public String getPlayground() {

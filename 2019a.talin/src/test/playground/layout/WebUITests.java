@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -25,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import playground.logic.Location;
 import playground.logic.NewUserForm;
+import playground.logic.Entities.ActivityEntity;
 import playground.logic.Entities.ElementEntity;
 import playground.logic.Entities.UserEntity;
 import playground.logic.Exceptions.UserNotFoundException;
@@ -38,6 +40,8 @@ public class WebUITests {
 	private PlaygroundService playgroundService;
 
 	private RestTemplate restTemplate;
+	
+	private String playground;
 
 	@LocalServerPort
 	private int port;
@@ -119,17 +123,15 @@ public class WebUITests {
 		Map<String, Object> attributes = new HashMap<>();
 		String creatorPlayground = "2019a.talin";
 		String creatorEmail = "2019a.Talin@Gmail.com";
-
+		final String name;
+		
 		// location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
 		// add specific attribute
-		Random rand = new Random();
-		if (rand.nextInt(100) < 20) { // 20% of the elements
-			attributes.put("Eat", "meat");
-		}
-
+		name = "cat";
+		
 		// location,value,exirationDate,type,attributes,creatorPlayground,creatorEmail
 		IntStream.range(0, numberOFElements) // int stream
-				.mapToObj(value -> new ElementEntity(new Location(value, value), "animal #" + value, exirationDate,
+				.mapToObj(value -> new ElementEntity(new Location(value, value), (name == null)? "animal #" + value: name, exirationDate,
 						type, attributes, creatorPlayground, creatorEmail)) // ElementTO stream using constructor
 																			// reference
 				.forEach(playgroundService::addNewElement);
@@ -664,5 +666,243 @@ public class WebUITests {
 					ElementTO.class, 
 					playground,email,playground,id);
 		//	Then the response status is <> 2xx
+	}
+	
+	//T
+	@Test
+	public void testGetEementsWithThisAttributeValueUsingDefaultPagination() throws Exception {
+
+		int DefaultSize = 10;
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat";
+
+		/*
+		 * Given Server is up
+		 * And the database contains 20 elements with the name cat
+		 */
+
+		setElementsDatabase(20);
+
+		// when
+		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
+
+		// then
+		assertThat(actualElement).isNotNull().hasSize(DefaultSize);
+	}
+	
+	//T
+	@Test
+	public void testGetElementsWithAttributeValueThatNotExistsUsingDefaultPagination() throws Exception {
+
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat";
+
+		/*
+		 * Given Server is up
+		 */
+
+		// when
+		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
+
+		// then
+		assertThat(actualElement).isEmpty();
+	}
+	
+	//T
+	@Test(expected = Exception.class)
+	public void testGetElementsWithInvalidAttributeUsingDefaultPagination() throws Exception {
+		int DefaultSize = 10;
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/Momo/cat";
+
+		/*
+		 * Given Server is up
+		 */
+
+		// when
+		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
+
+		// then
+		assertThat(actualElement).hasSize(DefaultSize);
+	}
+	
+	//T
+	@Test
+	public void testGetElementsWithThisAttributeValueUsingPaginationSuccessfully() throws Exception {
+
+		int size = 3;
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat" + "?size=" + size;
+
+		/*
+		 * Given Server is up
+		 *  And the database contains 10 elements with the name cat
+		 */
+		setElementsDatabase(10);
+
+		// when
+		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
+
+		// then
+		assertThat(actualElement).isNotNull().hasSize(size);
+	}
+	
+	//T
+	@Test
+	public void testGetElementsWithThisAttributeValueUsingPaginationOf100PageSuccessfully () throws Exception {
+
+		int size = 6;
+		int page = 100;
+
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat" +
+		"?size=" + size + "&page="
+				+ page;
+
+		/*
+		 * Given Server is up 
+		 * And the database contains 10 elements with the name cat
+		 */
+		setElementsDatabase(10);
+
+		// when
+		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
+
+		// then
+		assertThat(actualElement).isEmpty();
+	}
+	
+	//T
+	@Test
+	public void testGetElementsWithThisAttributeValueUsingPaginationOfSecondPageSuccessfully () throws Exception {
+
+		int size = 6;
+		int page = 1;
+		int numOfElements = 10;
+
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat" + "?size=" + size + "&page="
+				+ page;
+
+		/*
+		 * Given Server is up 
+		 * And the database contains 10 elements with the name cat
+		 */
+		setElementsDatabase(10);
+
+		// when
+		ElementTO[] actualElement = this.restTemplate.getForObject(url, ElementTO[].class);
+
+		// then
+		assertThat(actualElement).isNotNull().hasSize(numOfElements - size);
+	}
+	
+	//T
+	@Test(expected = Exception.class)
+	public void testGetElementsWithThisAttributeValueWithInvalidPageSize() {
+		// when
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat";
+
+		/*
+		 * Given Server is up 
+		 */
+
+		// When 
+		this.restTemplate.getForObject(url + "?size={size}&page={page}", ElementTO[].class, -6, 1);
+
+		// Then the response status is <> 2xx
+	}
+	
+	// T
+	@Test
+	public void testActivateElementSuccessfully() throws Exception {
+		// Given Server is up
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/activities/2019a.talin/myEmail@mail.com";
+		
+		//And the database contains element with playground+id: 2019a.talin0
+		ElementEntity.resetID();
+		this.playgroundService.addNewElement(new ElementEntity());
+
+		// When I POST activity with
+		String elementId = "0";
+		String elementPlayground = "2019a.talin";
+		String type = "ACO";
+		
+		//check that element exists
+		this.playgroundService.getElement(elementId, elementPlayground);
+		
+		ActivityTO.resetID();
+		ActivityTO newActivityTO = new ActivityTO();
+		newActivityTO.setElementId(elementId);
+		newActivityTO.setElementPlayground(elementPlayground);
+		newActivityTO.setType(type);
+		this.restTemplate.postForObject(url, newActivityTO, ActivityTO.class);
+		
+		//  Then the response status is 2xx and body is:
+		ActivityEntity activityEntityExist = this.playgroundService.getActivity("0", "2019a.talin");
+		ActivityTO activityTOExist = new ActivityTO(activityEntityExist);
+		ActivityTO expectedTOActivity = this.jackson.readValue(
+				"{\"playground\":\"2019a.talin\", \"id\":\"0\","
+				+ " \"elementPlayground\":\"2019a.talin\", \"elementId\":\"0\","
+				+ " \"type\":\"ACO\", \"playerPlayground\":\"2019a.talin\","
+				+ " \"playerEmail\": \"myEmail@mail.com\"}", ActivityTO.class);
+		
+		assertThat(activityTOExist).isEqualTo(expectedTOActivity);
+	}
+	
+	// T
+	@Test(expected = Exception.class)
+	public void testActivateElementWithInvalidActivityType() throws Exception {
+		// Given Server is up
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/activities/2019a.talin/myEmail@mail.com";
+		
+		//And the database contains element with playground+id: 2019a.talin0
+		ElementEntity.resetID();
+		this.playgroundService.addNewElement(new ElementEntity());
+
+		// When I POST activity with
+		String elementId = "0";
+		String elementPlayground = "2019a.talin";
+		String type = "Play";
+		
+		//check that element exists
+		this.playgroundService.getElement(elementId, elementPlayground);
+		
+		ActivityTO.resetID();
+		ActivityTO newActivityTO = new ActivityTO();
+		newActivityTO.setElementId(elementId);
+		newActivityTO.setElementPlayground(elementPlayground);
+		newActivityTO.setType(type);
+		this.restTemplate.postForObject(url, newActivityTO, ActivityTO.class);
+		
+		//  Then the response status is <> 2xx
+	}
+	
+	// T
+	@Test(expected = Exception.class)
+	public void testActivatingNotExistingElement() throws Exception {
+		// Given Server is up
+		String baseUrl = "http://localhost:" + port;
+		String url = baseUrl + "/playground/activities/2019a.talin/myEmail@mail.com";
+
+		// When I POST activity with
+		String elementId = "0";
+		String elementPlayground = "2019a.talin";
+		String type = "ACO";
+		
+		//check that element exists
+		this.playgroundService.getElement(elementId, elementPlayground);
+		
+		ActivityTO.resetID();
+		ActivityTO newActivityTO = new ActivityTO();
+		newActivityTO.setElementId(elementId);
+		newActivityTO.setElementPlayground(elementPlayground);
+		newActivityTO.setType(type);
+		this.restTemplate.postForObject(url, newActivityTO, ActivityTO.class);
+		
+		//  Then the response status is <> 2xx
 	}
 }

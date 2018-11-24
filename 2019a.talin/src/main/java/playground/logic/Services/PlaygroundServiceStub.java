@@ -33,7 +33,7 @@ public class PlaygroundServiceStub implements PlaygroundService {
 		this.activitiesDatabase = new HashMap<>();
 	}
 
-	public void setElementsDatabase(Map<String, ElementEntity> elementsDatabase) {
+	public synchronized void setElementsDatabase(Map<String, ElementEntity> elementsDatabase) {
 		Date exirationDate = null;
 		String type = "animal";
 		String creatorPlayground = "2019a.talin";
@@ -61,15 +61,14 @@ public class PlaygroundServiceStub implements PlaygroundService {
 	}
 	
 	
-	////////////////////void???????????????
 	@Override
-	public void addNewActivity(ActivityEntity activityEntity) {
-		this.activitiesDatabase.put(activityEntity.getId(), activityEntity);
-
+	public synchronized ActivityEntity addNewActivity(ActivityEntity activityEntity) {
+		this.activitiesDatabase.put(activityEntity.getPlayground() + activityEntity.getId(), activityEntity);
+		return activityEntity;
 	}
 
 	@Override
-	public ElementEntity getElement(String element_id, String element_Playground) throws ElementNotFoundException {
+	public synchronized ElementEntity getElement(String element_id, String element_Playground) throws ElementNotFoundException {
 		ElementEntity rv = this.elementsDatabase.get(element_Playground + element_id);
 		if (rv == null) {
 			throw new ElementNotFoundException("could not find element by id: " + element_Playground + element_id);
@@ -78,10 +77,10 @@ public class PlaygroundServiceStub implements PlaygroundService {
 	}
 
 	@Override
-	public ActivityEntity getActivity(String activity_id) throws Exception {
-		ActivityEntity rv = this.activitiesDatabase.get(activity_id);
+	public synchronized ActivityEntity getActivity(String activity_id, String playground) throws Exception {
+		ActivityEntity rv = this.activitiesDatabase.get(playground + activity_id);
 		if (rv == null) {
-			throw new RuntimeException("could not find activity by id: " + activity_id);
+			throw new RuntimeException("could not find activity by id: " + playground + activity_id);
 		}
 		return rv;
 	}
@@ -94,19 +93,32 @@ public class PlaygroundServiceStub implements PlaygroundService {
 	}
 
 	@Override
-	public boolean validateActivityType(String type) {
+	public synchronized boolean validateActivityType(String type) {
 		boolean result;
 
 		switch (type) {
-		case "Play":
+		case "ACO":
 			result = true;
 			break;
 
-		case "Place an add":
+		default:
+			result = false;
+			break;
+		}
+
+		return result;
+	}
+	
+	@Override
+	public synchronized boolean validateElementAttribteName(String name) {
+		boolean result;
+
+		switch (name) {
+		case "name":
 			result = true;
 			break;
 
-		case "Read an add":
+		case "type":
 			result = true;
 			break;
 
@@ -118,15 +130,15 @@ public class PlaygroundServiceStub implements PlaygroundService {
 		return result;
 	}
 
-	public Map<String, ActivityEntity> getActivitiesDatabase() {
+	public synchronized Map<String, ActivityEntity> getActivitiesDatabase() {
 		return activitiesDatabase;
 	}
 
-	public void setActivitiesDatabase(Map<String, ActivityEntity> activitiesDatabase) {
+	public synchronized void setActivitiesDatabase(Map<String, ActivityEntity> activitiesDatabase) {
 		this.activitiesDatabase = activitiesDatabase;
 	}
 
-	public Map<String, ElementEntity> getElementsDatabase() {
+	public synchronized Map<String, ElementEntity> getElementsDatabase() {
 		return elementsDatabase;
 	}
 
@@ -218,7 +230,7 @@ public class PlaygroundServiceStub implements PlaygroundService {
 	
 	
 	@Override
-	public void cleanup() {
+	public synchronized void cleanup() {
 		this.elementsDatabase.clear();
 		this.activitiesDatabase.clear();
 		this.usersDatabase.clear();
