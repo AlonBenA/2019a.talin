@@ -4,11 +4,11 @@ import playground.logic.Entities.UserEntity;
 
 public class UserTO {
 	private String email;
-	private String playground = "2019a.Talin";
+	private String playground;
 	private String username;
 	private String avatar;
 	private String role;
-	private long points = 0;
+	private long points;
 
 	public UserTO() {
 		this("","","","");

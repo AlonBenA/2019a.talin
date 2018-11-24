@@ -193,24 +193,22 @@ public class PlaygroundServiceStub implements PlaygroundService {
 	@Override
 	public synchronized void updateUser(UserEntity updatedUserEntity,String email,String playground) throws Exception {
 
-		if (this.usersDatabase.containsKey(email + playground)) {
-			UserEntity userEntity = this.usersDatabase.get(email + playground);
+		if (this.usersDatabase.containsKey(playground + email)) {
+			UserEntity userEntity = this.usersDatabase.get(playground + email);
 
-			if (updatedUserEntity.getUsername() != "" && userEntity.getUsername() != null && !userEntity.getUsername().equals(updatedUserEntity.getUsername())) {
+			if (userEntity.getUsername() != null && !userEntity.getUsername().equals(updatedUserEntity.getUsername())) {
 				userEntity.setUsername(updatedUserEntity.getUsername());
 			}
 
-			if (updatedUserEntity.getAvatar() != "" && userEntity.getAvatar() != null && !userEntity.getAvatar().equals(updatedUserEntity.getAvatar())) {
+			if (userEntity.getAvatar() != null && !userEntity.getAvatar().equals(updatedUserEntity.getAvatar())) {
 				userEntity.setAvatar(updatedUserEntity.getAvatar());
 			}
 			
-			if (updatedUserEntity.getRole() != "" && userEntity.getRole() != null && !userEntity.getRole().equals(updatedUserEntity.getRole())) {
+			if (userEntity.getRole() != null && !userEntity.getRole().equals(updatedUserEntity.getRole())) {
 				userEntity.setRole(updatedUserEntity.getRole());
 			}
 			
-					
-			
-			this.usersDatabase.put(email + playground, userEntity);
+			this.usersDatabase.put(playground + email, userEntity);
 
 		} else {
 			throw new ElementNotFoundException("Did not found the element");

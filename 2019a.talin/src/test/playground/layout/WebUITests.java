@@ -466,21 +466,30 @@ public class WebUITests {
 		// When I Put http://localhost:8083/playground/users/2019a.talin/talin@email.com
 		// And with body
 		// {
-		// "avatar":"https://moodle.afeka.ac.il/theme/image.jpg"
-		// }
+		//		"email": ”talin@email.com”
+		//		"playground": "2019a.Talin",
+		//		"username": "user2",
+		//		"avatar": “https://moodle.afeka.ac.il/theme/image.jpg",
+		//		"role": "Player",
+	 	//		"points": 0,
+		//		"code":"1234"
+		//}
 		// with headers:
 		// Accept: application/json
 		// Content-Type: application/json
 		UserTO updateUser = new UserTO();
+		updateUser.setEmail(email);
+		updateUser.setRole(role);
+		updateUser.setUsername(username);
 		updateUser.setAvatar(newAvatar);
-
+		
+		
 		this.restTemplate.put(url, updateUser, playground, email);
 
 		// Then the response status is 200
 		// And the database contains for email: ”talin@email.com” the object
 		// {"email": ”talin@email.com”,"playground": "2019a.Talin",
-		// "username":
-		// "user2","avatar":"https://moodle.afeka.ac.il/theme/image.php/adaptable/core/1541344729/f/archive",
+		// "username":"user2","avatar":“https://moodle.afeka.ac.il/theme/image.jpg",
 		// "role": "Player","points": 0,"code":"1234"
 		// }
 		UserEntity actualUser = this.playgroundService.getUser(email, playground);
@@ -495,22 +504,32 @@ public class WebUITests {
 	public void TestUpdateNonExistingUser() throws Exception {
 		String baseUrl = "http://localhost:" + port;
 		String url = baseUrl + "/playground/users/{playground}/{email}";
-		String newAvatar = "https://moodle.afeka.ac.il/theme/image.jpg";
 		String email = "talin@email.com";
 		String playground = "2019a.Talin";
+		String username = "user2";
+		String role = "Player";
+		String newAvatar = "https://moodle.afeka.ac.il/theme/image.jpg";
 
 		// Given Server is up
 		// When I Put http://localhost:8083/playground/users/2019a.talin/talin@email.com
 		// And with body
 		// {
-		// "avatar":"https://moodle.afeka.ac.il/theme/image.php/adaptable/core/1541344729/f/archive"
-		// }
-
+		//		"email": ”talin@email.com”
+		//		"playground": "2019a.Talin",
+		//		"username": "user2",
+		//		"avatar": “https://moodle.afeka.ac.il/theme/image.jpg",
+		//		"role": "Player",
+	 	//		"points": 0,
+		//		"code":"1234"
+		//}
 		// with headers:
 		// Accept: application/json
 		// Content-Type: application/json
 
 		UserTO updateUser = new UserTO();
+		updateUser.setEmail(email);
+		updateUser.setRole(role);
+		updateUser.setUsername(username);
 		updateUser.setAvatar(newAvatar);
 
 		this.restTemplate.put(url, updateUser, playground, email);
