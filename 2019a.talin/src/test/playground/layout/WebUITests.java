@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
@@ -15,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -25,11 +23,9 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import playground.logic.Location;
-import playground.logic.NewUserForm;
 import playground.logic.Entities.ActivityEntity;
 import playground.logic.Entities.ElementEntity;
 import playground.logic.Entities.UserEntity;
-import playground.logic.Exceptions.UserNotFoundException;
 import playground.logic.Services.PlaygroundService;
 
 @RunWith(SpringRunner.class)
@@ -71,8 +67,6 @@ public class WebUITests {
 
 	}
 
-	// SAP
-/////////////////////////////////////////////////////////////////////////////////
 	// S
 	@Test
 	public void testUserSignupSuccessfully() throws Exception {
@@ -110,8 +104,8 @@ public class WebUITests {
 				.containsExactly(email, playground, username, avatar, role);
 	}
 	
-	
-	@Test(expected=Exception.class)
+	// S
+	@Test(expected = Exception.class)
 	public void testUserSignupWithDuplicateKey() throws Exception {
 		String url = base_url + "/playground/users";
 		String email = "usermail2@usermail.com";
@@ -138,17 +132,14 @@ public class WebUITests {
 				+ "\"email\":\"usermail2@usermail.com\",\"username\":\"user2\","
 				+ "\"avatar\":\"https://goo.gl/images/WqDt96\",\"role\":\"Player\""
 				+ "}", NewUserForm.class);
-//		NewUserForm newUserForm = new NewUserForm(email, username, avatar, role);
-		try {
-			this.restTemplate.postForObject(url, newUserForm, NewUserForm.class);
+
+		this.restTemplate.postForObject(url, newUserForm, NewUserForm.class);
 			
 //		Then the response status is <> 2xx
-		}catch(Exception e) {
-			e.printStackTrace();
-			throw e;
-		}	
+		
 	}
 	
+	// S
 	@Test
 	public void testValidateSuccessfully() throws Exception {
 		String url = base_url + "/playground/users/confirm/{playground}/{email}/{code}";
@@ -169,7 +160,7 @@ public class WebUITests {
 		
 //		When I GET http://localhost:8083/playground/users/confirm/2019a.Talin/usermail1@usermail.com/X
 //		with headers:
-//		 Accept: application/json
+//			Accept: application/json
 		
 		UserTO actualUser = this.restTemplate.getForObject(url, UserTO.class, playground, email, code);
 
@@ -196,17 +187,148 @@ public class WebUITests {
 
 		UserEntity actualValue = this.playgroundService.getUser(actualUser.getEmail(), actualUser.getPlayground());
 		assertThat(actualValue)
-			.extracting("email", "playground", "username", "avatar", "role")
-			.containsExactly(email, playground, username, avatar, role);
-		assertThat(actualValue)
-			.extracting("code")
-			.isNull();
+			.extracting("email", "playground", "username", "avatar", "role", "code")
+			.containsExactly(email, playground, username, avatar, role, null);
 	}
+	
+	// S
+	@Test(expected = Exception.class)
+	public void testValidateWithInvalidCode() throws Exception {
+		String url = base_url + "/playground/users/confirm/{playground}/{email}/{code}";
+		String email = "usermail1@usermail.com";
+		String username = "user1";
+		String avatar = "https://goo.gl/images/WqDt96";
+		String role = "Manager";
+		String playground = "2019a.Talin";
+		String code = 1234+"";
+		String wrongCode = 1111+"";
+//		Given Server is up
+//		And the database contains 
+//		[{"email": "usermail1@usermail.com", "playground": "2019a.Talin",
+//				"username": "user1", "avatar": "https://goo.gl/images/WqDt96", 
+//						"role": "Manager", "points": 0,	"code":"X"}]
+		
+		this.playgroundService.addNewUser(new UserEntity(email, username, avatar, role));
+		this.playgroundService.getUser(email, playground).setCode(code);
+		
+//		When I GET http://localhost:8083/playground/users/confirm/2019a.Talin/usermail1@usermail.com/Y
+//		with headers:
+//		 Accept: application/json
+		
+		this.restTemplate.getForObject(url, UserTO.class, playground, email, wrongCode);
+			
+//		Then the response status is <> 2xx
 
+	}
 	
+	// S
+	@Test(expected = Exception.class)
+	public void testValidateWithUnregisteredUser() throws Exception {
+		String url = base_url + "/playground/users/confirm/{playground}/{email}/{code}";
+		String email = "unregistered-user-mail@usermail.com";
+		String playground = "2019a.Talin";
+		String code = 1234+"";
+//		Given Server is up
+
+//		When I GET http://localhost:8083/playground/users/confirm/2019a.Talin/unregistered-user-mail@usermail.com/1234
+//		with headers:
+//			Accept: application/json
+
+		this.restTemplate.getForObject(url, UserTO.class, playground, email, code);
+			
+//		Then the response status is <> 2xx
+
+	}
 	
-///////////////////////////////////////////////////////////////////////////////
+	// S
+	@Test
+	public void testLoginSuccessfully() throws Exception {
+		String url = base_url + "/playground/users/login/{playground}/{email}";
+		String email = "usermail1@usermail.com";
+		String username = "user1";
+		String avatar = "https://goo.gl/images/WqDt96";
+		String role = "Manager";
+		String playground = "2019a.Talin";
+		String code = 1234+"";
+		
+//		Given Server is up
+//		And the database contains 
+//		[{"email": "usermail1@usermail.com", "playground": "2019a.Talin",
+//				"username": "user1", "avatar": "https://goo.gl/images/WqDt96", 
+//						"role": "Manager", "points": 0,	"code":null}]
+		
+		this.playgroundService.addNewUser(new UserEntity(email, username, avatar, role));
+		UserEntity userEntity = this.playgroundService.getUser(email, playground);
+		userEntity.setCode(code);
+		userEntity.verify(code);
+		
+//		When I GET http://localhost:8083/playground/users/login/2019a.Talin/usermail1@usermail.com
+//		with headers:
+//		 Accept: application/json
+		
+		UserTO actualUser = this.restTemplate.getForObject(url, UserTO.class, playground, email);
+
+//		Then the response status is 2xx and body is 
+//		{
+//				"email": "usermail1@usermail.com"
+//		    	"playground": "2019a.Talin",
+//		  		"username": any valid user name,
+//		   		"avatar": any valid url,
+//		    	"role": Manager/Player,
+//		   	 	"points": any positive integer
+//		}
+		
+		assertThat(actualUser)
+				.extracting("email", "playground")
+				.containsExactly(email, playground);
+	}
 	
+	// S
+	@Test(expected = Exception.class)
+	public void testLoginWithUnconfirmedUser() throws Exception {
+		String url = base_url + "/playground/users/login/{playground}/{email}";
+		String email = "usermail1@usermail.com";
+		String username = "user1";
+		String avatar = "https://goo.gl/images/WqDt96";
+		String role = "Manager";
+		String playground = "2019a.Talin";
+		
+//		Given Server is up
+//		And the database contains 
+//		[{"email": "usermail1@usermail.com", "playground": "2019a.Talin",
+//				"username": "user1", "avatar": "https://goo.gl/images/WqDt96", 
+//						"role": "Manager", "points": 0,	"code":"X"}]
+		
+		this.playgroundService.addNewUser(new UserEntity(email, username, avatar, role));
+		
+//		When I GET http://localhost:8083/playground/users/login/2019a.Talin/usermail1@usermail.com
+//		with headers:
+//		 Accept: application/json
+		
+		this.restTemplate.getForObject(url, UserTO.class, playground, email);
+
+//		Then the response status is <> 2xx
+		
+	}
+	
+	// S
+	@Test(expected = Exception.class)
+	public void testLoginWithUnregisteredUser() throws Exception {
+		String url = base_url + "/playground/users/login/{playground}/{email}";
+		String email = "unregistered-user-mail@usermail.com";
+		String playground = "2019a.Talin";
+		
+//		Given Server is up
+
+//		When I GET http://localhost:8083/playground/users/login/2019a.Talin/unregistered-user-mail@usermail.com
+//		with headers:
+//		 Accept: application/json
+		
+		this.restTemplate.getForObject(url, UserTO.class, playground, email);
+
+//		Then the response status is <> 2xx
+		
+	}
 	
 
 	private void setElementsDatabase(int numberOFElements) {

@@ -56,8 +56,9 @@ public class PlaygroundServiceStub implements PlaygroundService {
 
 	@Override
 	public synchronized ElementEntity addNewElement(ElementEntity elementEntity) {
-		this.elementsDatabase.put(elementEntity.getPlayground() + elementEntity.getId(), elementEntity);
-		return elementEntity;
+		String key = elementEntity.getPlayground() + elementEntity.getId();
+		this.elementsDatabase.put(key, elementEntity);
+		return this.elementsDatabase.get(key);
 	}
 	
 	

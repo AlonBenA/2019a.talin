@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import playground.logic.Location;
-import playground.logic.NewUserForm;
 import playground.logic.Entities.ActivityEntity;
 import playground.logic.Entities.UserEntity;
 import playground.logic.Exceptions.ElementNotFoundException;
@@ -276,8 +275,8 @@ public class WebUI {
 			produces=MediaType.APPLICATION_JSON_VALUE)
 	public UserTO userValidate (@PathVariable("playground") String userPlayground,@PathVariable("email") String email, @PathVariable("code") String code) throws Exception {
 		UserEntity userEntity = playgroundService.getUser(email, userPlayground);
-		boolean flag = userEntity.verify(code);
-		if(!flag)
+		userEntity.verify(code);
+		if(!userEntity.isVerified())
 			throw new RuntimeException("Wrong code");
 		return new UserTO(userEntity);
 	}
@@ -287,8 +286,8 @@ public class WebUI {
 			method=RequestMethod.GET,
 			path="/playground/users/login/{playground}/{email}",
 			produces=MediaType.APPLICATION_JSON_VALUE)
-	public UserTO login (@PathVariable("playground") String userPlayground,@PathVariable("email") String email) throws Exception {
-		UserEntity userEntity = playgroundService.getUser(email, userPlayground);
+	public UserTO login (@PathVariable("playground") String playground,@PathVariable("email") String email) throws Exception {
+		UserEntity userEntity = playgroundService.getUser(email, playground);
 		boolean flag = userEntity.isVerified();
 		if(!flag)
 			throw new RuntimeException("User not verified");

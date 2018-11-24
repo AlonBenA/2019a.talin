@@ -92,12 +92,14 @@ public class UserEntity {
 	public boolean verify(String code) {
 		if(code.equals(this.code.toString())) {
 			this.code = null;
+//			this.code.delete(0, this.code.length());
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean isVerified() {
+//		if("".equals(code.toString()))
 		if(code == null)
 			return true;
 		return false;
