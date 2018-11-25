@@ -218,10 +218,11 @@ public class WebUI {
 	public void updateUser (
 			@PathVariable("playground") String playground,
 			@PathVariable("email") String email,
-			@RequestBody UserTO newUser) throws Exception {
+			@RequestBody UserTO updatedUser) throws Exception {
 
-		
-		playgroundService.updateUser(newUser.convertFromUserTOToUserEntity(), email, playground);
+		updatedUser.setEmail(email);
+		updatedUser.setPlayground(playground);
+		playgroundService.updateUser(updatedUser.convertFromUserTOToUserEntity(), email, playground);
 
 	}
 	
@@ -235,6 +236,9 @@ public class WebUI {
 			@PathVariable("userPlayground") String userPlayground,
 			@PathVariable("email") String email, 
 			@RequestBody ElementTO elementTO) throws Exception {
+		
+		//add set to elementTo of userPlayground and Email
+		
 		return new ElementTO(
 				this.playgroundService.addNewElement(elementTO.convertFromElementTOToElementEntity()));
 	}

@@ -676,8 +676,9 @@ public class WebUITests {
 		// And the database contains And the user database contains {"email":
 		// ”talin@email.com”,"playground": "2019a.Talin",
 		// "username": "user2","avatar": "https://goo.gl/images/WqDt96",
-		// "role": "Player","points": 0,"code":"1234"}
+		// "role": "Player","points": 0,"code":null}
 		UserEntity userEnti = new UserEntity(email, username, avatar, role);
+		userEnti.setCode(null);
 		this.playgroundService.addNewUser(userEnti);
 
 		// When I Put http://localhost:8083/playground/users/2019a.talin/talin@email.com
@@ -688,21 +689,19 @@ public class WebUITests {
 		//		"username": "user2",
 		//		"avatar": “https://moodle.afeka.ac.il/theme/image.jpg",
 		//		"role": "Player",
-	 	//		"points": 0,
-		//		"code":"1234"
-		//}
+	 	//		"points": 0
+		//}	
 		// with headers:
 		// Accept: application/json
 		// Content-Type: application/json
 		UserTO updateUser = new UserTO();
-		updateUser.setEmail(email);
 		updateUser.setRole(role);
 		updateUser.setUsername(username);
 		updateUser.setAvatar(newAvatar);
 		
 		
 		this.restTemplate.put(url, updateUser, playground, email);
-
+		
 		// Then the response status is 200
 		// And the database contains for email: ”talin@email.com” the object
 		// {"email": ”talin@email.com”,"playground": "2019a.Talin",
@@ -711,9 +710,8 @@ public class WebUITests {
 		// }
 		UserEntity actualUser = this.playgroundService.getUser(email, playground);
 
-		assertThat(actualUser).extracting("email", "playground", "username", "avatar", "role").containsExactly(email,
-				playground, username, newAvatar, role);
-
+		assertThat(actualUser).extracting("email", "playground", "username", "avatar", "role", "code")
+								.containsExactly(email,playground, username, newAvatar, role, "null");
 	}
 
 	// I
@@ -736,8 +734,7 @@ public class WebUITests {
 		//		"username": "user2",
 		//		"avatar": “https://moodle.afeka.ac.il/theme/image.jpg",
 		//		"role": "Player",
-	 	//		"points": 0,
-		//		"code":"1234"
+	 	//		"points": 0
 		//}
 		// with headers:
 		// Accept: application/json
@@ -769,13 +766,16 @@ public class WebUITests {
 		double x = 1.0;
 		double y = 1.0;
 		String type = "animal";
+		Map<String,Object> attributes = new HashMap<>();
 
+		
 		ElementTO newElement = new ElementTO();
 		newElement.setId(Id);
 		newElement.setName(name);
 		newElement.setLocation(new Location(x, y));
 		newElement.setType(type);
-
+		newElement.setAttributes(attributes);
+		
 		// Given server is up
 
 		// When I POST
@@ -785,7 +785,7 @@ public class WebUITests {
 		// “name”: “cat”,
 		// “type”:”animal”
 		// “location”:{“x”:0.0,”y”:0.0},
-		//
+		// "attributes": {}
 		// }
 		// with headers:
 		// Accept: application/json
@@ -796,9 +796,8 @@ public class WebUITests {
 
 		ElementEntity elementEntityExist = this.playgroundService.getElement(Id, playground);
 
-		assertThat(elementEntityExist).extracting("name", "type", "location").containsExactly(name, type,
-				new Location(x, y));
-
+		assertThat(elementEntityExist).extracting("name", "type", "location","attributes")
+										.containsExactly(name, type,new Location(x, y),attributes);
 	}
 
 	// I
@@ -843,8 +842,7 @@ public class WebUITests {
 		// with headers:
 		// Accept: application/json
 
-		ElementTO actualElement = this.restTemplate.getForObject(url, ElementTO.class, playground, email, playground,
-				id);
+		ElementTO actualElement = this.restTemplate.getForObject(url, ElementTO.class, playground, email, playground,id);
 
 		// Then the response status is 2xx and body is
 
@@ -860,7 +858,6 @@ public class WebUITests {
 		// }
 		assertThat(actualElement).isNotNull().extracting("playground", "id", "name", "type", "location", "attributes")
 				.containsExactly(playground, id, name, type, new Location(x, y), new HashMap<>());
-
 	}
 
 	// I
