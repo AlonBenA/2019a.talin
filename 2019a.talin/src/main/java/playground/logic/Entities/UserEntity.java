@@ -18,7 +18,7 @@ public class UserEntity {
 	public UserEntity(String email, String username, String avatar, String role) {
 		super();
 		setEmail(email);
-		this.playground = "2019a.Talin";
+		this.playground = "2019a.talin";
 		setUsername(username);
 		setAvatar(avatar);
 		setRole(role);
