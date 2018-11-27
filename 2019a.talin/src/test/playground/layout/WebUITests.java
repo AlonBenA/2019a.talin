@@ -354,8 +354,7 @@ public class WebUITests {
 	public void testGetAllElementsUsingPaginationWithDefaultSizeOfFirstPageSuccessfully() throws Exception {
 
 		int DefaultSize = 10;
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/talin@email.com/all";
+		String url = base_url + "/playground/elements/2019a.talin/talin@email.com/all";
 
 		/*
 		 * Given Server is up And the database contains 10 Elements
@@ -376,8 +375,7 @@ public class WebUITests {
 	public void TestGetSomeElementsUsingPaginationSuccessfully() throws Exception {
 
 		int size = 3;
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/talin@email.com/all" + "?size=" + size;
+		String url = base_url + "/playground/elements/2019a.talin/talin@email.com/all" + "?size=" + size;
 
 		/*
 		 * Given Server is up And the database contains 10 Elements
@@ -399,8 +397,7 @@ public class WebUITests {
 		int size = 3;
 		int page = 100;
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/talin@email.com/all" + "?size=" + size + "&page="
+		String url = base_url + "/playground/elements/2019a.talin/talin@email.com/all" + "?size=" + size + "&page="
 				+ page;
 
 		/*
@@ -422,8 +419,7 @@ public class WebUITests {
 		int size = 6;
 		int page = 1;
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/talin@email.com/all" + "?size=" + size + "&page="
+		String url = base_url + "/playground/elements/2019a.talin/talin@email.com/all" + "?size=" + size + "&page="
 				+ page;
 
 		/*
@@ -443,8 +439,8 @@ public class WebUITests {
 	public void testGetAllElementsWithIinvalidPageSize() {
 		// when
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/null/talin@email.com/all";
+
+		String url = base_url + "/playground/elements/null/talin@email.com/all";
 
 		/*
 		 * Given Server is up And the database contains 20 Elements
@@ -465,8 +461,7 @@ public class WebUITests {
 		int distance = 10;
 		int DefaultSize = 10;
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/Tali@email.com/near/" + x + "/" + y + "/" + distance;
+		String url = base_url + "/playground/elements/2019a.talin/Tali@email.com/near/" + x + "/" + y + "/" + distance;
 
 		/*
 		 * Given Server is up And the database contains 10 Elements
@@ -492,8 +487,8 @@ public class WebUITests {
 		int distance = 10;
 		int size = 3;
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/Tali@email.com/near/" + x + "/" + y + "/" + distance
+		
+		String url = base_url + "/playground/elements/2019a.talin/Tali@email.com/near/" + x + "/" + y + "/" + distance
 				+ "?size=" + size;
 
 		/*
@@ -521,8 +516,7 @@ public class WebUITests {
 		int size = 5;
 		int page = 1;
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/Tali@email.com/near/" + x + "/" + y + "/" + distance
+		String url = base_url + "/playground/elements/2019a.talin/Tali@email.com/near/" + x + "/" + y + "/" + distance
 				+ "?size=" + size + "&page=" + page;
 
 		/*
@@ -550,8 +544,7 @@ public class WebUITests {
 		int size = 3;
 		int page = 100;
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/Tali@email.com/near/" + x + "/" + y + "/" + distance
+		String url = base_url + "/playground/elements/2019a.talin/Tali@email.com/near/" + x + "/" + y + "/" + distance
 				+ "?size=" + size + "&page=" + page;
 
 		/*
@@ -573,9 +566,8 @@ public class WebUITests {
 		int x = 5;
 		int y = 4;
 		int distance = 10;
-		String baseUrl = "http://localhost:" + port;
 
-		String url = baseUrl + "/playground/elements/null/Tali@email.com/near/" + x + "/" + y + "/" + distance;
+		String url = base_url + "/playground/elements/null/Tali@email.com/near/" + x + "/" + y + "/" + distance;
 
 		this.restTemplate.getForObject(url + "?size={size}&page={page}", ElementTO[].class, -6, 1);
 	}
@@ -588,8 +580,7 @@ public class WebUITests {
 		String updateAnElementID = "updateAnElementID";
 		String playground = "2019a.talin";
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/talin@email.com/" + playground + "/"
+		String url = base_url + "/playground/elements/2019a.talin/talin@email.com/" + playground + "/"
 				+ updateAnElementID;
 
 		Map<String, Object> attributes = new HashMap<String, Object>();
@@ -635,8 +626,7 @@ public class WebUITests {
 	// A
 	@Test(expected = Exception.class)
 	public void testUpdateNonExistingElement() throws Exception {
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/talin@email.com/2019a.talin/{ID}";
+		String url = base_url + "/playground/elements/2019a.talin/talin@email.com/2019a.talin/{ID}";
 		String ID = "0";
 		String playground = "2019a.talin";
 
@@ -660,8 +650,8 @@ public class WebUITests {
 	// I
 	@Test
 	public void TestUpdateUserSuccessfully() throws Exception {
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/users/{playground}/{email}";
+
+		String url = base_url + "/playground/users/{playground}/{email}";
 
 		String email = "talin@email.com";
 		String playground = "2019a.Talin";
@@ -713,8 +703,7 @@ public class WebUITests {
 	// I
 	@Test(expected = Exception.class)
 	public void TestUpdateNonExistingUser() throws Exception {
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/users/{playground}/{email}";
+		String url = base_url + "/playground/users/{playground}/{email}";
 		String email = "talin@email.com";
 		String playground = "2019a.Talin";
 		String username = "user2";
@@ -752,8 +741,7 @@ public class WebUITests {
 	public void TestElementCreatedSuccessfully() throws Exception {
 		// Given Server is up
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/{userPlayground}/{email}";
+		String url = base_url + "/playground/elements/{userPlayground}/{email}";
 
 		String playground = "2019a.talin";
 		String Id = "123";
@@ -813,8 +801,7 @@ public class WebUITests {
 		// "creatorPlayground":"2019a.talin",
 		// "creatorEmail":”Talin@email.com"
 		// }
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/{userPlayground}/{email}/{playground}/{id}";
+		String url = base_url + "/playground/elements/{userPlayground}/{email}/{playground}/{id}";
 
 		String playground = "2019a.talin";
 		String id = "123";
@@ -860,8 +847,7 @@ public class WebUITests {
 	@Test(expected = Exception.class)
 	public void TestGetElementWithInvalidId() throws Exception {
 		// Given Server is up
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/{userPlayground}/{email}/{playground}/{id}";
+		String url = base_url + "/playground/elements/{userPlayground}/{email}/{playground}/{id}";
 		String playground = "2019a.talin";
 		String id = "123";
 		String email = "tali@mali.com";
@@ -880,8 +866,7 @@ public class WebUITests {
 	public void testGetEementsWithThisAttributeValueUsingDefaultPagination() throws Exception {
 
 		int DefaultSize = 10;
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat";
+		String url = base_url + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat";
 
 		/*
 		 * Given Server is up And the database contains 20 elements with the name cat
@@ -900,8 +885,7 @@ public class WebUITests {
 	@Test
 	public void testGetElementsWithAttributeValueThatNotExistsUsingDefaultPagination() throws Exception {
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat";
+		String url = base_url + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat";
 
 		/*
 		 * Given Server is up
@@ -918,8 +902,8 @@ public class WebUITests {
 	@Test(expected = Exception.class)
 	public void testGetElementsWithInvalidAttributeUsingDefaultPagination() throws Exception {
 		int DefaultSize = 10;
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/Momo/cat";
+
+		String url = base_url + "/playground/elements/2019a.talin/myEmail@mail.com/search/Momo/cat";
 
 		/*
 		 * Given Server is up
@@ -937,8 +921,7 @@ public class WebUITests {
 	public void testGetElementsWithThisAttributeValueUsingPaginationSuccessfully() throws Exception {
 
 		int size = 3;
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat" + "?size=" + size;
+		String url = base_url + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat" + "?size=" + size;
 
 		/*
 		 * Given Server is up And the database contains 10 elements with the name cat
@@ -959,8 +942,7 @@ public class WebUITests {
 		int size = 6;
 		int page = 100;
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat" + "?size=" + size
+		String url = base_url + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat" + "?size=" + size
 				+ "&page=" + page;
 
 		/*
@@ -983,8 +965,7 @@ public class WebUITests {
 		int page = 1;
 		int numOfElements = 10;
 
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat" + "?size=" + size
+		String url = base_url + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat" + "?size=" + size
 				+ "&page=" + page;
 
 		/*
@@ -1003,8 +984,7 @@ public class WebUITests {
 	@Test(expected = Exception.class)
 	public void testGetElementsWithThisAttributeValueWithInvalidPageSize() {
 		// when
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat";
+		String url = base_url + "/playground/elements/2019a.talin/myEmail@mail.com/search/name/cat";
 
 		/*
 		 * Given Server is up
@@ -1020,8 +1000,7 @@ public class WebUITests {
 	@Test
 	public void testActivateElementSuccessfully() throws Exception {
 		// Given Server is up
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/activities/2019a.talin/myEmail@mail.com";
+		String url = base_url + "/playground/activities/2019a.talin/myEmail@mail.com";
 
 		// And the database contains element with playground+id: 2019a.talin0
 		ElementEntity.resetID();
@@ -1057,8 +1036,7 @@ public class WebUITests {
 	@Test(expected = Exception.class)
 	public void testActivateElementWithInvalidActivityType() throws Exception {
 		// Given Server is up
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/activities/2019a.talin/myEmail@mail.com";
+		String url = base_url + "/playground/activities/2019a.talin/myEmail@mail.com";
 
 		// And the database contains element with playground+id: 2019a.talin0
 		ElementEntity.resetID();
@@ -1086,8 +1064,7 @@ public class WebUITests {
 	@Test(expected = Exception.class)
 	public void testActivatingNotExistingElement() throws Exception {
 		// Given Server is up
-		String baseUrl = "http://localhost:" + port;
-		String url = baseUrl + "/playground/activities/2019a.talin/myEmail@mail.com";
+		String url = base_url + "/playground/activities/2019a.talin/myEmail@mail.com";
 
 		// When I POST activity with
 		String elementId = "0";
